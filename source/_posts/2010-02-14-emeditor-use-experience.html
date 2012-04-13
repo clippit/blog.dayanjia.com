@@ -1,0 +1,73 @@
+---
+layout: post
+title: 拒绝折腾——好用的EmEditor
+categories:
+- 雕虫小技
+- 一家之言
+tags:
+- EmEditor
+- 心得
+- 软件
+published: true
+comments: true
+---
+<p><img class="alignright" title="EmEditor" src="http://www.emeditor.com/images/emeditor-text-editor.png" alt="" width="274" height="102" />套用一句俗话，叫做工欲善其事必先利其器，这其中“善其事”是指要有好的思想来解决问题，而“利其器”就是说要选择一个适合自己的工具。文本编辑器自然也不例外，尤其是已经或者即将有写代码需要的童鞋，您总不能拿Word来做事吧？嘿嘿~虽然某些高手曾经宣称“记事本是最适合写代码的工具”，但奈何悲观地认为我这辈子都达不到这样境界了……想必大家都或多或少使用过一些文本编辑器，自然也有自己的使用习惯，像<a href="http://www.editplus.com/" target="_blank">Editplus</a>、<a href="http://www.ultraedit.com/" target="_blank">UltraEdit</a>、<a href="http://www.scintilla.org/SciTE.html" target="_blank">SciTE</a>、<a href="http://www.vim.org/" target="_blank">Vim</a>、<a href="http://www.gnu.org/software/emacs/" target="_blank">Emacs</a>等等。</p>
+
+<p>在这里顺便侃侃，如果我们把使用何种文本编辑器和独孤求败的剑法对应起来的话，Word可以算是利剑，上述的那些可以算作紫薇软剑或者是玄铁重剑（尤其UE是重剑），以我当前水平尚处于传说级别的Vim和Emacs恐怕就是木剑了，至于记事本么……就是无剑啦！哈哈，扯了这么多，还是要引出本文的主角，本人用起来非常上手的EmEditor了，在这里和大家分享分享。</p>
+
+<p><!--more--></p>
+
+<p>EmEditor是一款小日本开发的软件，像什么代码高亮、代码折叠、连接编译器什么的，都是基本功能，在这里就不赘述了。不过我在说心得之前，还是要说说它的不足：
+<ol>
+	<li>不是开源免费而是是收费商业软件，<a href="https://secure.shareit.com/shareit/cart.html?PRODUCT[300338216]=1&amp;hidecoupon=1&amp;backlink=http%3A%2F%2Fwww.emeditor.com%2F" target="_blank">官网售价￥299.41</a>（我只能很无耻地成为了盗版软件受害者）</li>
+	<li>不是跨平台的，仅有Windows版本</li>
+	<li>由于不是开源的，所以它尽管有扩展插件的功能，不过大多数所谓插件都是软件作者自己写的</li>
+	<li>子窗口停泊的功能不甚理想</li>
+	<li>项目的功能不足，尤其是用EmEditor自己来管理项目的时候（不过也不能强求它了，毕竟是轻量级的文本编辑器不是IDE）</li>
+	<li>没有即时参考chm格式手册的功能（据说通过外接程序KeyHH可以解决该问题）</li>
+</ol>
+<h2>轻巧的列块编辑功能</h2>
+话说列块编辑功能，可是Vim、UltraEdit这类软件的看家功能，不过EmEditor也带有轻巧的列块编辑功能哦。按住Alt键用鼠标拖选就可以了，那么这个列块编辑功能有什么作用呢？</p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/02/EmEditor1.png"><img class="alignnone size-medium wp-image-522" title="EmEditor 截图1" src="http://dayanjia.com/wp-content/uploads/2010/02/EmEditor1-500x307.png" alt="列块编辑功能" width="500" height="307" /></a></p>
+
+<p>如上图，想要把HDOM全部替换成其他字符有什么好方法呢？除了使用替换功能，我们就可以来试试列块编辑功能了。按住Alt键用鼠标拖出一个矩形框把它们选中，然后键盘输入想要替换的字符，选中的字符就全都一起变化了。如果是列块选择在行首或者行末的话，就可以同时在每一行添加文本了，同时列块也可以像正常的文本一样剪切复制，十分强大。
+<h2>丰富的预制代码片段</h2>
+有时候，我们需要输入许多模式化的文本，这在HTML中尤其常见，输入很多<code>&lt;</code>和<code>&gt;</code>有时候显得很烦人，因为毕竟要按一个Shift键。EmEditor预制了各种编程语言中常用的代码片段，可以随时调用。比如，我在一段<code>&lt;?php ?&gt;</code>里面输入class后按下Tab键，它就会自动生成下面的内容：</p>
+
+<p>[php light="true"]<br />
+/**<br />
+*
+*/<br />
+class ClassName extends AnotherClass<br />
+{</p>
+
+<p>	function __construct(argument)<br />
+	{<br />
+		# code...<br />
+	}<br />
+}</p>
+
+<p>[/php]</p>
+
+<p>其中光标会停留在注释的第二行上，输入类的说明文字以后再按一下Tab键，光标就会选中ClassName让你输入类名，再按下Tab键会选中extends AnotherClass，你可以选择地输入继承的类名……以此类推，通过按Tab键来依次修改这个预定义好的代码片段。再比如，我输入一个英文感叹号以后按下Tab键，它就会出现一个菜单，让我选择一种IE条件注释，例如我选择了IE6 only以后，它就会生成<code>&lt;!--[if IE 6]&gt;     IE Conditional Comment: Internet Explorer 6 only   &lt;![endif]--&gt;</code>。不过那种用写CSS选择器生成HTML代码的Zen Coding功能还没有，而且<a title="Zen Coding – 超快地写网页代码" href="http://www.appinn.com/zen-coding/" target="_blank">Zen Coding</a>也没有EmEditor的插件。
+<h2>强大的查找替换</h2>
+EmEditor的查找替换功能有两大强大之处，一是支持正则表达式，二是支持多文件批量查找替换。正则表达式很强大自然不必我多说，来简单地看一个示例吧，把英文半角的双引号"替换成配对的中文双引号“”，只需要在查找的窗口输入<code>"([^"]*)"</code>，在替换的文本框中输入<code>“\1”</code>，就可以一次替换成功了。当然，在文件中批量替换也是一样。此外EmEditor还有一个贴心的小设计，那就是把文中所有匹配的字符用绿色的背景标出，就像用荧光笔涂过一样，可以让你很清楚地看出匹配的内容。
+<h2>纯文本表格处理</h2>
+有时候我们要看一些CSV（逗号分隔）或者是TSV（Tab分隔）的纯文本表格文件，但是一般情况下可视效果都非常差，列根本对齐不到一起去。在EmEditor里，这些文件可以以非常可视化的形式显示出来，列都被对齐了，而且就像表格软件那样，可以拖动调整列宽。更绝的是，EmEditor还可以对纯文本文件进行排序……OMG……</p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/02/EmEditor2.png"><img class="alignnone size-medium wp-image-523" title="EmEditor 截图2" src="http://dayanjia.com/wp-content/uploads/2010/02/EmEditor2-500x376.png" alt="CSV文件编辑" width="500" height="376" /></a>
+<h2>剪切板历史记录</h2>
+我有时候总是觉得剪切板只有一个非常麻烦，像Word那些软件都有多重剪切板的功能，也有独立的软件来实现它。不过在EmEditor里面剪切板的历史记录是自动保存的，在需要粘贴的时候，循环按下Ctrl+Shift+V键就可以遍历剪切板的历史，选择要粘贴的内容。而且EmEditor也有保存工作区的功能，能让你下次打开软件的时候，撤销记录、剪切板记录依旧存在。
+<h2>轻松应付超大文件和各种文字编码</h2>
+EmEditor应对超大文件是很有一套的，可能是软件架构做的比较好吧，它有一个大文件载入控制器，保证打开超大文件不会卡，更不会失去响应。在EmEditor的官网上还专门有一个<a href="http://www.emeditor.com/modules/feature1/rewrite/tc_9.html" target="_blank">打开超大文件的测试</a>，仿佛官方对这个特性十分得意呢。说实话，我上次有个20多MB的文件，其他软件一打开就失去响应了，唯独EmEditor笑傲江湖。</p>
+
+<p>此外，EmEditor对Unicode的支持异常完美，而且软件可以用UTF-7、UTF-8、UTF-16BE、UTF-16LE（我一直搞不清这四个有什么区别……）和其他各类不同的文字编码载入文件，自动识别编码的效果也很好。我们可以新建一个很Geek版的文字高亮配置，然后用“OEM 美国(437)”的代码页来打开那些0day资源附带的nfo文件，就可以看到那些破解小组精心制作的ASCII字符艺术了。</p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/02/EmEditor3.png"><img class="alignnone size-medium wp-image-524" title="EmEditor 截图3" src="http://dayanjia.com/wp-content/uploads/2010/02/EmEditor3-463x500.png" alt="ASCII字符艺术" width="463" height="500" /></a>
+<h2>结语</h2>
+写到这里，我自己都觉得在给人家写软文了……呵呵，不过我可是真心诚意地和大家分享我的使用心得哈！也许你会说，我用的某某开源文本编辑器，你上面的功能我都能实现——没错，我相信这些功能不会是EmEditor独有的，最起码那传说级别的Vim和Emacs肯定早就有人做了相关的插件了。</p>
+
+<p>不过我可不想扯到什么“开源软件和商业软件开发模式不同”这类的话题上。事实上我本人也很推崇那种“只做好自己的事，给别人留下接口”的理念（或者说信条），不过我的水平实在是还没有达到会在一个文本编辑器上折腾许久的层次。EmEditor那种为你想得非常全面，拒绝折腾的做法我还是很喜欢的（尽管我是无耻的盗版软件受害者）。</p>
+
+<p>总之，毕竟那只是工具，是辅助我们“善其事”的，一切都要为实际工作服务。所以文本编辑器永远是自己用着顺手的最好。在这里再次给大家拜个晚年，祝愿大家都能找到一款最适合自己的文本编辑器！</p>

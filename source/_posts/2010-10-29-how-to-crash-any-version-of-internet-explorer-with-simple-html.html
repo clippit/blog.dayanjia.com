@@ -1,0 +1,56 @@
+---
+layout: post
+title: 一段能瞬间秒杀所有版本Internet Explorer的简单HTML代码
+categories:
+- 雕虫小技
+tags:
+- Internet
+- Microsoft
+published: true
+comments: true
+---
+<p>许多人都<a title="why so many geeks hate Internet Explorer" href="http://www.howtogeek.com/howto/32372/htg-explains-why-do-so-many-geeks-hate-internet-explorer/" target="_blank">非常讨厌Internet Explorer</a>，在西方万圣节即将到来之际，让我们来看一个真正吓人的东西——如何用一段简单的HTML和CSS，将任何版本的IE搞死。</p>
+
+<p>我们只需要简单地打开任意文本编辑器，将下面的代码复制进去，然后保存文件，例如<code>SomeFilename.html</code>。</p>
+
+<p><!--more--></p>
+
+<p>[html]<br />
+&lt;html&gt;&lt;head&gt;<br />
+&lt;style type=&quot;text/css&quot;&gt;<br />
+#a {<br />
+        margin:0 10px 10px;<br />
+}</p>
+
+<p>#b {<br />
+        width:100%;<br />
+}</p>
+
+<p>&lt;/style&gt;<br />
+&lt;title&gt;IE Crasher&lt;/title&gt;<br />
+&lt;/head&gt;<br />
+&lt;body&gt;<br />
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;<br />
+&lt;div id=&quot;a&quot;&gt;<br />
+&lt;form id=&quot;b&quot;&gt;<br />
+&lt;input type=&quot;text&quot; name=&quot;test&quot;/&gt;<br />
+&lt;/div&gt;<br />
+&lt;/td&gt;&lt;td width=&quot;1&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;<br />
+&lt;/body&gt;&lt;/html&gt;<br />
+[/html]</p>
+
+<p><a rel="attachment wp-att-1085" href="http://dayanjia.com/2010/10/how-to-crash-any-version-of-internet-explorer-with-simple-html.html/ie9-crash"><img class="alignleft size-thumbnail wp-image-1085" title="IE9 crash" src="http://dayanjia.com/wp-content/uploads/2010/10/IE9-crash-200x113.png" alt="" width="200" height="113" /></a>然后用Internet Explorer打开它——哈哈！它很惨地死给你看了。</p>
+
+<p>这个bug几乎存在于现在流行的所有IE版本，从IE6到刚刚发布的Internet Explorer 9的第6个平台预览版。在IE6中，该页面往往显示为空白，但是整个窗口都无法交互。在IE8中，崩溃来得很彻底。而IE9 Beta增强了坚固性，经过我的实测，这个页面又是会导致整个进程无响应，而有时IE9会提示你网页存在的问题，但是这都无法避免崩溃的现实。</p>
+
+<p><a rel="attachment wp-att-1085" href="http://dayanjia.com/2010/10/how-to-crash-any-version-of-internet-explorer-with-simple-html.html/ie9-crash"><img class="alignnone size-large wp-image-1085" title="IE9 crash" src="http://dayanjia.com/wp-content/uploads/2010/10/IE9-crash-580x328.png" alt="" width="580" height="328" /></a></p>
+
+<p>事实上，<a title="Pure HTML &amp; CSS code that crashes IE7/8" href="http://groups.google.com/group/microsoft.public.internetexplorer.general/browse_frm/thread/80a2645dc598a4b2?pli=1" target="_blank">很早就有人</a>发现过这个问题了，而且还有一个专门的网站（<a href="http://crashie8.com/">http://crashie8.com/</a>，请谨慎传播此链接）。除了IE以外的浏览器打开那个页面都不会有任何问题，但是IE却莫名其妙地崩溃。</p>
+
+<p>当然，如果你细心的话，会发现上面的HTML代码中<code>&lt;form&gt;</code>标签没有闭合。我们需要在<code>&lt;input&gt;</code>标签后使用<code>&lt;/form&gt;</code>闭合标签才能让这段代码符合规范。规范的代码就不会让IE崩溃了，这样看来似乎并不是IE的错。</p>
+
+<p>但是，<strong>当其他浏览器都能有很高的容错性时，IE没有，甚至到了IE9还是没有，这就是IE的悲剧了。</strong></p>
+
+<p><strong>
+</strong>
+<blockquote>编译自How-to Geek: <a title="How to Crash Any Version of Internet Explorer with Simple HTML" href="http://www.howtogeek.com/howto/33394/how-to-crash-any-version-of-internet-explorer-with-simple-html/" target="_blank">How to Crash Any Version of Internet Explorer with Simple HTML </a></blockquote></p>

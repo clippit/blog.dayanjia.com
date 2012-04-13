@@ -1,0 +1,19 @@
+---
+layout: post
+title: IE7β3的一个小Bug
+categories:
+- 雕虫小技
+tags:
+- Microsoft
+- 软件
+published: true
+comments: true
+---
+<p><span style="LINE-HEIGHT: 150%"><p>beta版本毕竟就是beta版本啊！IE7β3里已经发现了一个不大不小的bug，无关痛痒，不过看着实在难受！</p>
+<p><a href="http://www.bababian.com:80/phoinfo/B5BCDFF75C6F567FBBFD8EC6F8659908DT"><img alt="IE7β3Bug" src="http://photo.bababian.com/20060714/B5BCDFF75C6F567FBBFD8EC6F8659908_500.jpg" border="0" /></a></p>
+<p>看到三个红框框住的地方了么？很难看吧~~</p>
+<p>其实解决这个问题也很简单，只要把下面的内容存成注册表文件.reg，然后导入注册表就可以了</p>
+<blockquote dir="ltr" style="MARGIN-RIGHT: 0px">
+<p><code>Windows Registry Editor Version 5.00</code></p>
+<p><code>[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files]<br />@="{8369AB20-56C9-11D0-94E8-00AA0059CE02}"<br />"Display"="已下载的程序文件"<br />"Description"="已下载的程序文件包括 ActiveX 控件和 Java 小程序，您查看特定网页时将会从 Internet 自动下载它们，并临时保存在硬盘上的 Downloaded Program Files 文件夹中。"<br />"Priority"=hex:64,00,00,00<br />"AdvancedButtonText"="查看文件(&amp;V)"<br />"StateFlags"=dword:00000001</code></p></blockquote>
+<p>导入注册表后，一切终于恢复了平静！</p><a href="http://www.bababian.com:80/phoinfo/6B0EBB2B188E154D0B71B08DFD3D5D22DT"><img alt="IE7β3BugFix" src="http://photo.bababian.com/20060714/6B0EBB2B188E154D0B71B08DFD3D5D22_500.jpg" border="0" /></a></span></p>

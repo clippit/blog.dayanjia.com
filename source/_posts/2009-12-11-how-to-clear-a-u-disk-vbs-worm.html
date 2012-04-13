@@ -1,0 +1,64 @@
+---
+layout: post
+title: U盘VBS病毒大闹软院机房【附简单手动清除方法】
+categories:
+- 雕虫小技
+- 侃侃而谈
+tags:
+- Windows
+- 南京大学
+- 故障处理
+published: true
+comments: true
+---
+<p><img class="alignleft size-full wp-image-446" title="No VBS Worm" src="http://dayanjia.com/wp-content/uploads/2009/12/NoVBSWorm.png" alt="No VBS Worm" width="94" height="120" />从本周开始，陆续有同学反映U盘自从在软院机房（计算系统基础实验室）中使用过后不幸中毒，目前来看感染趋势正不断扩大。话说这东西像病毒又不像病毒，因为它的主体文件是.vbs脚本，依靠Windows脚本宿主来执行，个人感觉很山寨很雷人。.vbs文件的内容作了加密处理，因此一般情况下你也不知道它到底会干什么事。经过这两天若干次的重复手动查杀后，我感觉这就是一个恶作剧型的病毒，因为它貌似本身不会去盗号什么的，也不是一个Downloader，看上去就是一个纯粹的恶作剧。但是这个破东西想要彻底地从电脑中清除出去也还挺费事的，因为它修改了很多地方，不过依靠一些辅助软件手动清除还是可行的。</p>
+
+<p><span style="color: #003300;"><strong>下面就让我们来简单看看它都干了什么：</strong>
+</span><!--more-->
+<ol>
+	<li>自身重命名为一个随机数字.vbs文件，会复制自身到C:\WINDOWS\system32\和磁盘每个分区、插入的可移动磁盘根目录并设置了autorun.inf——U盘病毒的惯用伎俩，不过采用vbs文件的我倒是第一次遇见……</li>
+	<li>把所有分区中的文件夹属性设置为系统、隐藏，并创建一个连接到相应文件夹的快捷方式（.lnk文件）——相当恶心的一个做法</li>
+	<li>设置开机自启动，位置为：<code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows:Load</code>——此项默认应为空，有别于那个一般的<code>HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</code>键，这个比较隐蔽</li>
+	<li>修改了多种文件的文件关联用于随时随地激活自己，包括lnk、txt、exe、ini、cmd、chm……涵盖了许多常用的文件类型</li>
+	<li>修改了桌面上“我的电脑”和Internet Explorer的打开关联，例如双击我的电脑会首先会激活vbs然后再打开explorer窗口</li>
+	<li>监视命令提示符（cmd），打开后过3秒钟自动关闭，如果直接在运行对话框执行bat文件的话，会弹出一个cmd上面写道“Hi, I'm Here!”然后过3秒钟自动关闭……这个也太嚣张了吧！</li>
+</ol>
+<strong><span style="color: #003300;">这个破蠕虫，实际上对你的人身安全没有任何危害，但是却把你的电脑搞的一团糟。昨天晚上和今天下午在软院机房的数台电脑和某些同学的笔记本上进行了手动清除尝试后，基本上已经把它驯服了，下面就说说方法吧：</span></strong>
+<ol>
+	<li>首先进入安全模式，这样病毒就不会自启动了，很好很强大。相比于某些让安全模式蓝屏的病毒，它显得温和许多~~~</li>
+	<li>系统自己的shell像我的电脑啊，磁盘分区啊，文件夹啊，全被这个病毒劫持了，所以你不能使用它们！在清除过程中不能有任何双击操作，一旦操作失误就会导致前功尽弃！那我们用什么文件管理器好呢？你可能会说用TC吧，但是那不是每个人电脑里都有的，所以就要祭出我们的撞击必备软件——WinRAR！哈哈，这个软件可以看到所有被恶意隐藏的文件，而且管理起来其实也很方便的。WinRAR说：“我很低调，但是我真的很强大！”</li>
+	<li>建议大家准备一个辅助工具<a href="http://www.kztechs.com/sreng/index1.html" target="_blank">SREng（System Repair Engineer）</a>，一个微软MVP写的安全软件，用它来清除恶意启动项和修复文件关联是非常方便的。现在大家可以放心地插入自己的U盘，然后打开准备好的软件，它会很智能的告诉你Windows:Load有一个恶意启动项~清空之……然后修复文件关联，最后还可以使用系统修复中的高级修复，使用推荐级别修复一下。如果要一个一个修改注册表来搞这些的话，会非常繁琐。</li>
+	<li>按Win+R，弹出运行对话框，输入“notepad”打开记事本，然后输入下面的批处理命令吧：
+<ul>
+	<li><code>attrib -s -h * /s /d<br />
+del autorun.inf<br />
+del *.vbs<br />
+del *.lnk</code></li>
+	<li>把这个文件保存为c.bat放到C盘根目录，D盘根目录……以此类推</li>
+	<li>第一行的内容比较简单粗暴，它把全部文件去除系统和隐藏的属性，这样可能会把某些本身自己就应该是系统+隐藏的文件搞出来~不过也没关系啦，不乱碰就OK了</li>
+	<li>剩下来的三行就是很简单的了，把病毒相关文件和很恶心的快捷方式.inf文件全删掉</li>
+</ul>
+</li>
+	<li>再次按Win+R，弹出运行对话框，输入“cmd”打开命令提示符，然后依次进入各个分区运行这个批处理，详情如下：
+<ul>
+	<li><code>c:<br />
+c.bat<br />
+d:<br />
+d.bat<br />
+e:<br />
+......</code></li>
+</ul>
+</li>
+	<li>到此为止就差不多了，但是还有一个没有修复，那就是桌面上我的电脑和IE的关联，SREng没有修复它的功能（或许以后可以联系作者去加入这个功能哈），需要我们手动去做。
+<ol>
+	<li>Win+R输入“regedit”打开注册表编辑器</li>
+	<li>展开至<code>HKEY_CLASSES_ROOT\CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell</code>，这里是“我的电脑”的关联。我们可以发现其下<code>explore\command</code>和<code>open\command</code>都被恶意修改了，删除explorer键和open键。</li>
+	<li>再次展开至<code>HKEY_CLASSES_ROOT\CLSID\{871C5380-42A0-1069-A2EA-08002B30309D}\shell</code>，这里是IE的关联了，展开到<code>OpenHomePage\Command</code>，把右边的默认值修改为“<code>"C:\Program Files\Internet Explorer\iexplore.exe"</code>”。</li>
+	<li>再次展开至<code>HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\iexplore.exe\shell\open\command</code>，把右面的默认值修改为“<code>"C:\Program Files\Internet Explorer\iexplore.exe" %1</code>”。</li>
+</ol>
+</li>
+	<li>Ok啦~现在请重新启动操作系统，进入正常模式下吧！</li>
+</ol>
+<strong><span style="color: #003300;">当然这种恶作剧的鬼东西，手动清除还是很麻烦的，所以自然有专杀的软件，大家可以去试试看USBCleaner和FolderCure，虽然我没有试过，仅仅做无责任推荐，呵呵~~</span></strong></p>
+
+<p><strong><span style="color: #003300;">祝大家杀毒愉快！</span></strong></p>

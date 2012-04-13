@@ -1,0 +1,221 @@
+---
+layout: post
+title: P2P文件共享技术的历史、现状和未来走向分析
+categories:
+- 雕虫小技
+tags:
+- Internet
+- P2P
+- Papers
+- 高科技产品探究课
+published: true
+comments: true
+---
+<p><blockquote>按语：这是我上个学期的一篇Term Paper，内容比较浅易，适合广大初学者理解P2P下载的一些细节。PS：第一次发现原来WordPress里的文章也可以分页的，本文很长，所以分了3页。</blockquote>
+本文介绍了P2P文件共享技术的背景，发展历史，对当前该技术由于被广泛用于盗版音像及软件制品的传播遭到版权部门的施压和由于过度占用带宽资源而受到ISP的限制等阻碍技术发展的现象进行了分析，并提出了未来P2P文件共享技术可能的发展方向。
+<div style="font-size: smaller; border: 1px dotted black; width: 50%; float: right;">
+<ul>
+	<li style="list-style-type: none;">一、P2P文件共享技术简介及其发展历史
+<ol>
+	<li style="list-style-type: decimal;">文件共享方式的变化</li>
+	<li style="list-style-type: decimal;">P2P文件共享的技术变化历史
+<ol>
+	<li style="list-style-type: lower-roman;">P2P文件共享技术应用早期</li>
+	<li style="list-style-type: lower-roman;">BitTorrent的兴起</li>
+	<li style="list-style-type: lower-roman;">eDonkey的取代者：eMule</li>
+	<li style="list-style-type: lower-roman;">多元化的P2P文件共享方式</li>
+</ol>
+</li>
+</ol>
+</li>
+	<li style="list-style-type: none;">二、P2P文件共享技术当前遭遇的发展阻碍
+<ol>
+	<li style="list-style-type: decimal;">版权部门的打击
+<ol>
+	<li style="list-style-type: lower-roman;">Warez盗版现状</li>
+	<li style="list-style-type: lower-roman;">P2P盗版的打击</li>
+</ol>
+</li>
+	<li style="list-style-type: decimal;">网络运营商的限制</li>
+</ol>
+</li>
+	<li style="list-style-type: none;">三、P2P文件共享技术的未来发展
+<ol>
+	<li style="list-style-type: decimal;">P2P是目前解决大文件传输最好的方案之一</li>
+	<li style="list-style-type: decimal;">技术无罪</li>
+	<li style="list-style-type: decimal;">支持身份验证的P2P网络是大势所趋</li>
+</ol>
+</li>
+	<li style="list-style-type: none;">参考文献</li>
+</ul>
+</div>
+<a href="http://dayanjia.com/wp-content/uploads/2010/02/P2P_Logo.jpg"><img class="size-thumbnail wp-image-516 alignnone" title="P2P_Logo" src="http://dayanjia.com/wp-content/uploads/2010/02/P2P_Logo-e1265788092180-180x116.jpg" alt="" width="180" height="116" /></a>
+<h2>一、    P2P文件共享技术简介及其发展历史</h2>
+<h3>1.    文件共享方式的变化</h3>
+“文件共享”这一概念伴随着计算机技术的发展而诞生。20世纪70年代之前，电子计算机的资料都是通过打孔卡进行保存的。在1971年，IBM发明了以磁信号为记录媒介的8英寸软盘，这一可擦写媒介的发明打开了文件共享的新篇章。随后，3.5英寸软盘、CD/DVD、U盘等产品的不断出现和技术升级，推进着基于存储介质的文件共享[15]。</p>
+
+<p>在软盘被发明后不久，1978年，基于电话线的BBS（电子公告牌系统）出现了。伴随着1979年Usenet新闻组的出现，互联网文件共享的雏形逐步呈现[15]。80年代后，FTP和IRC的出现让网络上的文件共享变得更加方便。90年代因特网的普及和MP3等多媒体编码技术出现，基于互联网的文件共享渐渐和基于存储介质的文件共享各占半壁江山。直到如今，我们依然广泛使用着这两种方式和他人共享文字和多媒体资料等数据。</p>
+
+<p><!--more-->
+<h3>2.    P2P文件共享的技术变化历史</h3>
+P2P（Peer to Peer，点对点）技术目前是互联网文件共享中广泛采用的一种方式。在早期的IRC聊天系统中，就有一些客户端允许用户间点对点地传输文件。而当时的FTP便可以认为是一种传统的“服务器-客户端”模式的文件传输方式。这种传统方式被命名为P2S，即Peer to Server。下面两图便形象地表明了P2S模式和P2P传输模式的不同。显而易见的是，P2P相对于传统模式，有着分摊带宽，节约服务器成本的巨大优势。</p>
+
+<p>[caption id="attachment_517" align="alignnone" width="483" caption="图 1 传统文件共享模式（P2S）［7］"]<a href="http://dayanjia.com/wp-content/uploads/2010/02/Server-based-network.png"><img class="size-medium wp-image-517" title="Server-based-network" src="http://dayanjia.com/wp-content/uploads/2010/02/Server-based-network-483x500.png" alt="" width="483" height="500" /></a>[/caption]</p>
+
+<p>[caption id="attachment_518" align="alignnone" width="483" caption="图 2 P2P文件共享模式［6］"]<a href="http://dayanjia.com/wp-content/uploads/2010/02/P2P-network.png"><img class="size-medium wp-image-518" title="P2P-network" src="http://dayanjia.com/wp-content/uploads/2010/02/P2P-network-483x500.png" alt="" width="483" height="500" /></a>[/caption]
+<h4>1)     P2P文件共享技术应用早期</h4>
+一般认为真正的P2P文件共享起源于1999年的音乐分享网站Napster。Napster采用的是一种集中结构的方式，服务器端存放用户报告自己拥有的MP3文件信息，其他用户在服务器上搜索音乐文件，下载过程是完全点对点的。Napster的巅峰时期是2001年初，当时它拥有2640万的用户[12]。</p>
+
+<p>随后在2000年的3月，另一种P2P文件共享的网络Gnutella出现了。不同于Napster，Gnutella采用了分布式的文件共享网络，没有一个专门搜集文件信息的服务器。在2000年的9月，eDonkey2000出现了，它继承了前者的分布式文件共享网络，但是为文件增加了“Hash”的信息。所谓Hash，简单地说，就是根据文件的内容通过一定的算法产生一个与之对应且唯一的字符串，这样用户便可以直接通过这个字符串来准确地定位到需要的文件，而无需关心其文件名是什么（事实上文件名可以随意更改而不影响文件的实质内容）。</p>
+
+<p>如今的P2P文件共享网络基本上都结合了这两种方式。Napster采用的方式我们可以称之为基于“中心服务器”的P2P文件共享网络，而另一种方式我们可以称其为基于DHT，即“分布式散列表(Distributed Hash Table)”的P2P文件共享网络。
+<h4>2)     BitTorrent的兴起</h4>
+2001年夏天，一个名叫Bram Cohen的美国程序员开发了一个名为BitTorrent的软件，该软件的推出引发了一场互联网文件传输的革命。BitTorrent的名字直译为中文就是“比特洪流”，它所使用的BitTorrent协议正如该中文名字一样，起到了传统文件传输模式不可能实现的“下载的人越多，速度越快”的“洪流”效应。由于当初的BitTorrent是基于MIT授权的开源软件，因此后来衍生出了众多使用该协议的下载软件，这种下载方式也逐渐被人们称为“BT下载”。</p>
+
+<p>起初的BT协议是需要一个中心服务器来存放用户的信息的，这样的一个服务器被称为Tracker服务器。根据BT协议，文件的发布者需要制作一个.torrent的文件，一般被称为“种子”文件。种子文件中包含了Tracker服务器的相关信息和发布者共享的文件的信息。制作种子文件的软件会将目标文件分解为若干个文件块，对每一个部分根据协议的编码方式计算其Hash，并将索引信息和Hash信息保存在种子文件中。下载者通过得到发布者提供的种子文件，来连接到Tracker服务器获取其他下载者（包括发布者自己）的IP地址，然后连接到其他下载者。双方通过种子文件来确认已经拥有的文件块，并相互交换没有的数据[19]。用户在下载完毕后，即拥有了全部的文件块后，便自动转为“做种”的模式，负责上传其他用户所需的文件块。</p>
+
+<p>在整个下载过程中，Tracker服务器仅负责提供下载该文件的用户列表，并不会存储文件本身，数据交换完全是用户之间通过P2P进行的。因此下载的人越多，提供的带宽也就越多，用户获取到自己没有的文件块的机会就越大，下载速度就越快。在BT协议的后续版本中，也加入了DHT的支持，以实现无Tracker服务器的文件传输。严格意义上来说，BT下载并不是纯粹的P2P文件共享，因为其需要一个种子文件，这个文件一般来说是通过传统传输模式来下载的。不过因为种子文件一般都很小（大约几十KB），因此对服务器的压力并不会很大。世界上有很多专门提供种子文件下载的网站，比较著名的有Mininova、isoHunt、The Pirate Bay等。
+<h4>3)     eDonkey的取代者：eMule</h4>
+eMule是当今另一个比较流行的P2P文件共享协议，它的诞生和前文提到的eDonkey2000有着很大的关系。在2002年5月，一个名为Merkur的程序员由于不满eDonkey2000软件，决心做出一个功能类似但是更加强大的P2P文件共享软件[9]。eMule能够连接eDonkey的网络（即基于中心服务器的P2P共享网络），同时还能连接Kad网络（基于DHT的Kademlia重叠网络）。相比于eDonkey2000，eMule有更加丰富的功能，例如上传下载积分系统，能够通过积分来控制用户下载文件的优先级，上传数据多者优先，这从一定程度上鼓励了用户多分享自己的文件而不是一味地下载别人提供的文件。
+<h4>4)     多元化的P2P文件共享方式</h4>
+如今BT和eMule是应用最广泛的两种P2P文件共享方式。除此之外，还有一些采用以该技术为基础的文件共享技术，例如P2SP和PT。</p>
+
+<p>P2SP指的是点对服务器和点技术（Peer to Sever &amp; Peer），它结合了P2P和传统文件传输模式两种方式。相比于单独使用某一种技术，P2SP在稳定性和速度方面比传统的P2P或P2S模式有了一定的提高[20]。在国内，迅雷是最为知名的采用P2SP技术的下载软件。</p>
+
+<p>PT下载事实上是一种特殊的BT下载模式，它的基本原理和BT下载一样，但是它的Tracker服务器并不像传统BT那样是公开的，而是私有的（Private Tracker）。PT下载一般依托于论坛社区，每个发布者都有一个唯一的属于自己的Tracker服务器地址，这样网站可以统计每一个用户的上传下载数量并换算成网站积分。国内著名的PT下载网站有HDChina，六维空间（基于IPv6网络）等。</p>
+
+<p>据艾瑞咨询的2009年11月下载工具软件行业数据显示（见表1），排名前10的下载软件中，有8款采用了P2P技术，可见如今P2P文件共享已经深入到互联网的日常行为中。尽管P2P文件共享本身并不是一种高科技产品，但是我们依然可以套用高科技产品生命周期理论来解释P2P技术的发展。可以说，在经历了早期的Napster和Gnutella之后，P2P文件共享技术已经进入了“Main Street”的阶段，称为了主流消费品。
+<pre>表 1 2009年11月中国下载软件使用量排名[16]</pre>
+<table border="0" cellspacing="1" cellpadding="0">
+<tbody>
+<tr>
+<th>排名</th>
+<th>软件</th>
+<th>日均覆盖人数<br />
+（万人）</th>
+<th>日均网民到达率</th>
+</tr>
+<tr>
+<td>1</td>
+<td>迅雷Thunder</td>
+<td>5187</td>
+<td>27.7%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>超级旋风</td>
+<td>745</td>
+<td>4.0%</td>
+</tr>
+<tr>
+<td>3</td>
+<td>FlashGet</td>
+<td>572</td>
+<td>3.1%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>电骡eMule</td>
+<td>556</td>
+<td>3.0%</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Web迅雷</td>
+<td>286</td>
+<td>1.5%</td>
+</tr>
+<tr>
+<td>6</td>
+<td>FlashFXP</td>
+<td>144</td>
+<td>0.8%</td>
+</tr>
+<tr>
+<td>7</td>
+<td>BitComet</td>
+<td>135</td>
+<td>0.7%</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Vagaa哇嘎</td>
+<td>70</td>
+<td>0.4%</td>
+</tr>
+<tr>
+<td>9</td>
+<td>μTorrnet</td>
+<td>61</td>
+<td>0.3%</td>
+</tr>
+<tr>
+<td>10</td>
+<td>FTPte</td>
+<td>40</td>
+<td>0.2%</td>
+</tr>
+</tbody>
+</table></p>
+
+<p><!--nextpage--></p>
+
+<p><h2>二、    P2P文件共享技术当前遭遇的发展阻碍</h2>
+<h3>1.   版权部门的打击</h3>
+<h4>1)     Warez盗版现状</h4>
+由于采用P2P技术发布文件成本低，效率高，因此如今的P2P文件共享技术已经和盗版传播紧密相连。这就不得不提到遍布全球的盗版组织，Warez是这些盗版组织的通称。盗版组织一般都是民间自发形成的，他们将市面上的软件、游戏、电影、音乐等制成盗版。拥有源作品提供者、破解者、传输者、发布者等严格的分工。他们盗版作品的一般途径是：原作品提供者向破解者提供合法的正版副本（这一般是购买而来）；破解者运用技术手段进行软件破解或者影片的翻录等工作；制成的产品将会交给传输者上传到各地的私密高速FTP服务器中（这种服务器一般被称为Topsites）；最后发布者得到这些盗版产品，向最终用户进行大规模地传播。下图便是一个Warez组织的人员分工流程示意[11]。在市面上流通的Warez盗版作品中可以明显地看到一些印记，例如将大文件利用分卷压缩技术分割成若干个小文件，文件名内会包含发布小组的名字，档案中会包含一个.nfo文件等等。目前世界上著名的Warez小组有DEViANCE、RELOADED、CORE等。</p>
+
+<p>[caption id="attachment_519" align="alignnone" width="243" caption="图 3 Warez组织分工图［11］"]<a href="http://dayanjia.com/wp-content/uploads/2010/02/Warez.png"><img class="size-full wp-image-519" title="Warez" src="http://dayanjia.com/wp-content/uploads/2010/02/Warez.png" alt="" width="243" height="443" /></a>[/caption]</p>
+
+<p>Warez盗版的一大特征就是“即时发布”，就是所谓的0day。它一般指的是在正版上市后最短的时间内（一般是一天之内）就能破解并发布出盗版作品。但如今Warez组织中的源作品提供者越来越强大，以至于很多盗版产品在正版发布之前就已经发布。例如游戏破解小组RELOADED在2008年3月29日发布了《刺客信条》的破解版，此时距离该游戏正版上市尚有1个月的时间 [21]。另一个更严重的事件是，2009年3月31日，网上泄露出了一个月后才会在北美公映的电影《金刚狼：X战警前传》，而且泄露出的影片中的后期特效还未制作完成[5]。仅仅泄露一天，该盗版就已经通过P2P网络迅速传播，下载量就超过了75,000次。
+<h4>2)     P2P盗版的打击</h4>
+尽管Warez组织追求的是“追求绝对技术，追求完全共享”，但是这事实上已经侵害到了正版厂商和版权部门的利益。哪怕是和Warez一点关系也没有的Napster，在被美国唱片工业协会（RIAA）告上法庭后也最终败诉关闭了服务。</p>
+
+<p>在美国EA公司制作FIFA 2000游戏时，有Warez组织成员混进EA公司内部，导致母盘泄露，结果盗版比正版提前出了1个月。结果EA公司在俄国、英国和德国分别将Warez小组DD、MYTH和CLASS告上法庭。俄国DD组织成员被抓并判刑，但后来司法部门受贿将该组织成员释放。英国法院则认为MYTH在网上传播盗版，自己没有网站和广告，没有赢利，所以判定MYTH组织无罪。德国的CLASS则只是罚款了事，没有追究任何刑事责任[2]。</p>
+
+<p>2009年11月，知名BT种子索引网站Mininova被迫删除了所有涉嫌版权侵害的BT种子文件[4]。此前，另一家大型Tracker网站The Pirate Bay的几位创始人被捕入狱[10]。</p>
+
+<p>2009年12月，中国广电总局以无《信息网络传播视听节目许可证》为由，由工信部撤消了当时国内最大的BT种子索引网站Btchina的备案号，使其被迫关站。此次行动还影响了包括悠悠鸟论坛、伊甸园论坛等BT站点。</p>
+
+<p>过去，Warez的传播大多是通过软盘和光盘进行的。然而随着P2P文件共享技术的成熟，盗版的传播逐渐转向以P2P网络为主要方式。不同于传统的模式，P2P模式传播速度很快，范围更广，特别是采用了DHT技术后，发布的文件可以完全不依靠中心服务器，这种“去中心化”具有很强的隐蔽性，不易被版权部门找到原始发布者。这些原因促使盗版的传播极大地依赖于P2P文件共享技术，但是版权部门的打压又阻碍了P2P技术的发展。
+<h3>2.    网络运营商的限制</h3>
+P2P文件共享技术虽然能够有效地缓解服务器的带宽压力，但由于每一个用户都同时充当了下载者和上传者的身份，这样P2P客户端的带宽压力比以前有所增加。在中国，有部分网络运营商（ISP）会采用一些手段屏蔽来自BT协议或者eMule的流量让用户几乎无法通过P2P网络下载文件。同时，针对局域网内P2P滥用的问题，有一些软件诸如P2P终结者，也可以通过ARP欺骗的方式封堵P2P网络的流量。这些举措一方面压制了P2P文件共享的发展，但在另一方面也促进了该技术的升级。例如如今eMule中加入了模糊协议的功能，能够加密使用该软件发出的封包标头，使ISP无法识别[8]。</p>
+
+<p><!--nextpage--></p>
+
+<p><h2>三、    P2P文件共享技术的未来发展</h2>
+<h3>1.   P2P是目前解决大文件传输最好的方案之一</h3>
+这一点是毋庸质疑的，事实上目前有许多厂商已经将P2P文件共享技术作为产品的主要推广方式。例如暴雪公司的网络游戏《魔兽世界》，其客户端和升级包的分发便是采用的“暴雪下载器”这样一个基于P2SP的软件。用户不仅仅从公司的服务器上下载文件，同时也通过BT协议从其他用户中获取文件内容。这对于一个客户端高达10GB数量级，更新包动辄数百MB的软件来说，采用这样的方式能够大大减轻服务器的负担，也能让公司把更多的精力放在如何提高游戏品质和客户服务上，而不是产品的分发问题。另一个例子是，一些Linux发行版如Fedora和Ubuntu，在发行新版时也会官方地提供BT种子。虽然也同时有各地的HTTP或FTP镜像服务器来提供下载，但是这些操作系统在正式发布新版本时往往会引起用户大规模地集体下载，导致服务器在短时间内负载过重。采用BT下载分流便是很好地解决了这一问题。</p>
+
+<p>除了应用于软件和游戏产品的分发之外，P2P技术也被用于在线流媒体的传输中，而且这种方式的应用在未来会得到进一步增加。目前国内P2P视频主要有两种方式，一种方式是以PPLive、PPStream为代表的基于客户端点播的P2P视频软件，这种方式更能体现出P2P技术的优势，即将P2P文件共享技术和在线流视频相结合，减轻了点播服务器的负载，让用户观看更加流畅；另一种方式是以爱酷（优酷网开发）、飞速土豆（土豆网开发）等软件为代表的基于大型视频分享网站内网络视频的P2P传输软件，相比于前者，这些软件的P2P传输效果并不是太好，其原因为视频分享网站中的视频数量多，用户观看视频较分散，无法发挥出P2P的效能。可以预见的是，随着网络带宽的增加和人们提高观影质量的诉求不断增多，未来在线视频的数据流量会越来越大，甚至在线1080p高清视频也会成为现实，到那时P2P文件共享技术的优势将会更加明显。同时，移动终端在未来也可能称为P2P的客户端，随着手机作为通用计算设备的不断发展和无线通信技术的革新，甚至可以在手机上采用P2P的技术来观看视频。
+<h3>2.    技术无罪</h3>
+笔者认为，作为一项技术，P2P文件共享本身是没有任何罪责的。可以预见的是，该技术不会因为来自各方的压力而逐渐淡出人们的日常生活。在这方面比较著名的就是Betamax判例。Betamax是索尼公司早期的一种家用录像机。该录像机可以通过电视机录制正在播放的节目，也可以通过自带的接收器在观众观看一个节目时录制另一个频道的节目，甚至还可以通过定时器在观众不在家时自动按预先设定的时间对某一指定的节目进行录制。1976年美国环球电影制片公司和迪斯尼制片公司向加州中区地区法院起诉索尼公司，认为消费者未经许可使用Betamax录像机录制其享有版权的节目构成版权侵权，而索尼公司制造和销售这种录像机的行为应当对消费者的录制行为承担帮助侵权的责任。1984年，美国联邦法院最后判决使用家用录像带、机在美国是合法的，因为录像机有实质上不违法的使用方式[22],[1]。这个先例后来在2005年米高梅工作室诉P2P软件公司Grokster的官司中被援引，使高等法院同意这个“实际上不违法的使用方式”也可以应用于P2P软件，而它们的作者、提供者也应是无罪的[18],[3]。</p>
+
+<p>然而，P2P技术的使用到底是否应当为盗版负责，仍然是一个在法律上有争议的问题。在Grokster案中，最终美国最高法院以9:0的压倒性票数通过了对P2P软件厂商Grokster裁决，认为公司所建立的业务若有强烈的鼓励侵权意图，则该厂商应该为客户的非法行为负责[22]。2009年12月，美国加州法院审理美国电影协会(MPAA)诉加拿大BT搜索网站ISOHunt的案件，最后法院裁定ISOHunt的行为违法，并认为其行为与传统的P2P盗版服务相同。本案是美国法官首次将BT种子搜索网站定性为非法[17]。
+<h3>3.    支持身份验证的P2P网络是大势所趋</h3>
+P2P技术作为盗版的主要传播方式在短时间内是无法改变的，但是厂商和版权部门不应该只看到P2P文件共享的劣势，前文提到该技术是成熟的并且依然具有很好的发展前景的，把P2P作为影音制品的一项发行渠道也不失为一种好办法。在2008年，点视传媒就和国内最大的eMule索引网站VeryCD合作在线发布了电影《赤壁（上）》的正版视频[14]。那次发布采用的版权保护措施是使用一种自主的媒体编码格式。事实上，单单使用自主的媒体格式、嵌入数字水印、采用数字权限管理技术（DRM）这类方式并不能有效地杜绝P2P盗版的传播。开发支持身份验证的P2P网络辅之以媒体文件保护的技术才是未来P2P传播“正规化”的治本之策。一种身份验证的方法是在P2P过程中增加一道门槛，正版付费用户首先会连接到一台私钥生成服务器产生一个唯一的私钥，在和其他用户建立连接时会首先验证彼此的私钥是否合法，如果合法才会正式建立连接并传输数据[13]。这样做能够有效地使P2P文件共享技术为正版传播所用，但是这样做需要使用专门的客户端软件，而且验证的门槛会减少同时在线下载的人数，从而影响P2P效能的发挥。如何有效地鉴别出正版用户和盗版用户并且在尽量不影响用户体验的同时保证文件传输的效率，是一个亟待解决的问题。充分利用P2P文件共享技术的优势，同时解决由于P2P网络不确定性带来的各种知识产权侵犯问题并有效管理P2P带来的巨大流量，能够更好地利用P2P技术优化网络服务，使人们可以以低成本的解决方案带来高质量的效益。
+<h2>参考文献</h2>
+<ul style="font-size: smaller;">
+	<li style="list-style-type: none;">[1]     Sony Corp. of America v. Universal City Studios, Inc., 464 U.S. 417 (Supreme Court of the United States 1 17, 1984).</li>
+	<li style="list-style-type: none;">[2]     无形帝国——盗版软件，真相大白. (2000). 大众软件, 80-84.</li>
+	<li style="list-style-type: none;">[3]     MGM Studios, Inc. v. Grokster, Ltd., 545 U.S. 913 (United States Supreme Court 6 27, 2005).</li>
+	<li style="list-style-type: none;">[4]     BBC. (2009, 11 26). Court ruling forces Mininova to end illegal torrents. Retrieved 1 5, 2010, from BBC NEWS: http://news.bbc.co.uk/2/hi/technology/8382012.stm</li>
+	<li style="list-style-type: none;">[5]     BBC. (2009, 4 1). New Wolverine film leaked online. Retrieved 1 5, 2010, from BBC NEWS: http://news.bbc.co.uk/2/hi/entertainment/7977265.stm</li>
+	<li style="list-style-type: none;">[6]     Bieg, M. (2007, 8 12). P2P-network.svg.</li>
+	<li style="list-style-type: none;">[7]     Bieg, M. (2007, 8 12). Server-based-network.svg.</li>
+	<li style="list-style-type: none;">[8]     eMule Team. (2006, 9 16). Protocol Obfuscation. Retrieved 1 5, 2010, from eMule Project: http://www.emule-project.net/home/perl/help.cgi?l=1&amp;rm=show_topic&amp;topic_id=848</li>
+	<li style="list-style-type: none;">[9]     eMule Team. (无日期). 欢迎. 检索日期: 2010年1月3日，来源: eMule官方网站: http://www.emule-project.net/home/perl/general.cgi?l=42</li>
+	<li style="list-style-type: none;">[10]  enigmax. (2009, 4 17). The Pirate Bay Trial: The Official Verdict – Guilty. Retrieved 1 5, 2010, from TorrentFreak: http://torrentfreak.com/the-pirate-bay-trial-the-verdict-090417/</li>
+	<li style="list-style-type: none;">[11]  Frap. (2009, 6 5). Warez.png.</li>
+	<li style="list-style-type: none;">[12]  Jupiter Media Metrix. (2001, 6 23). GLOBAL NAPSTER USAGE PLUMMETS, BUT NEW FILE-SHARING ALTERNATIVES GAINING GROUND, REPORTS JUPITER MEDIA METRIX. EDP Weekly's IT Monitor.</li>
+	<li style="list-style-type: none;">[13]  Lou, X., &amp; Hwang, K. (2009, 7). Collusive Piracy Prevention in P2P Content Delivery Networks. IEEE Transactions on Computers, pp. 970-983.</li>
+	<li style="list-style-type: none;">[14]  Storm. (2008年8月7日). 《赤壁》(Red Cliff)[IVM]正版免费下载. 检索日期: 2010年1月5日，来源: VeryCD: http://www.verycd.com/topics/311955/</li>
+	<li style="list-style-type: none;">[15]  Wikipedia contributors. (2009, 12 14). Timeline of file sharing. Retrieved 1 3, 2010, from Wikipedia, The Free Encyclopedia.: http://en.wikipedia.org/w/index.php?title=Timeline_of_file_sharing&amp;oldid=331588368</li>
+	<li style="list-style-type: none;">[16]  艾瑞咨询. (2009年12月28日). 艾瑞iUserTracker：09年11月下载工具软件行业数据. 检索日期: 2010年1月5日，来源: 艾瑞咨询集团: http://www.iresearch.com.cn/Data/Publish/MoreNews.asp?p=0&amp;d=19</li>
+	<li style="list-style-type: none;">[17]  书聿. (2009年12月29日). 美法院首次裁定BT种子搜索引擎违法. 检索日期: 2010年1月5日，来源: 新浪科技: http://tech.sina.com.cn/i/2009-12-29/10463720763.shtml</li>
+	<li style="list-style-type: none;">[18]  维基百科编者. (2009年10月7日). Betamax. 检索日期: 2010年1月5日，来源: 维基百科，自由的百科全书: http://zh.wikipedia.org/w/index.php?title=Betamax&amp;oldid=11339016</li>
+	<li style="list-style-type: none;">[19]  维基百科编者. (2009年12月23日). BitTorrent (协议). 检索日期: 2010年1月3日，来源: 维基百科，自由的百科全书: http://zh.wikipedia.org/w/index.php?title=BitTorrent_(%E5%8D%8F%E8%AE%AE)&amp;oldid=11910452</li>
+	<li style="list-style-type: none;">[20]  维基百科编者. (2009年9月16日). P2SP. 检索日期: 2010年1月4日，来源: 维基百科，自由的百科全书: http://zh.wikipedia.org/w/index.php?title=P2SP&amp;oldid=11175430</li>
+	<li style="list-style-type: none;">[21]  维基百科编者. (2009年10月16日). RELOADED. 检索日期: 2010年1月5日，来源: 维基百科，自由的百科全书: http://zh.wikipedia.org/w/index.php?title=Special:%E5%BC%95%E7%94%A8&amp;page=RELOADED&amp;id=11406329</li>
+	<li style="list-style-type: none;">[22]  张平. (2008年12月). 数字版权产业的利益机制：保护与分享. 北京大学, 中华人民共和国.</li>
+</ul></p>

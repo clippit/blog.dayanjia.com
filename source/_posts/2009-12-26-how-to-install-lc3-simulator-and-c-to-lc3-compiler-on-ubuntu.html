@@ -1,0 +1,144 @@
+---
+layout: post
+title: 在Ubuntu上安装LC-3模拟器和C到LC-3的编译器
+categories:
+- 雕虫小技
+tags:
+- Ubuntu
+- 南京大学
+published: true
+comments: true
+---
+<p>[caption id="attachment_448" align="alignright" width="180" caption="Introduction to Computing Systems"]<img class="size-thumbnail wp-image-448 " title="Introduction to Computing Systems" src="http://dayanjia.com/wp-content/uploads/2009/12/Introduction-to-Computing-Systems-180x180.jpg" alt="Introduction to Computing Systems" width="180" height="180" />[/caption]</p>
+
+<p>提到这篇文章，首先要隆重介绍一下LC-3这个东西。在Wikipedia上有<a title="LC-3 on Wikipedia" href="http://en.wikipedia.org/wiki/LC_3" target="_blank">LC-3的介绍</a>，有兴趣的朋友可以去看看。简单地说，LC-3是赫赫有名的Yale N. Patt在他的计算机专业教科书《<a title="书籍介绍" href="http://highered.mcgraw-hill.com/sites/0072467509/" target="_blank">Introduction to Computing Systems: From Bits and Gates to C and Beyond</a>》中发明的一种假想的基于冯·诺依曼体系的小型计算机，LC-3实际上就是Little Computer第3代的意思。而那本书正是南京大学软件学院的大一专业课程《计算系统基础》所用教材。说到这本教材成为我们教科书的缘由，还有一个传闻，不知是否可信。话说软院的陈道蓄老院长曾经在美国的时候接触到了这本书，对该书采用的“自底向上”教学方法颇为赞赏，并坚决要引进该书让国内计算机专业的大一学生学习。而刚开始这本书在大陆并没有引进，原版教材要卖80多美元，于是我校的印刷厂便接下了“翻印”该教材的任务，以低廉的成本价卖给学生。好在等到我这一届这本书的影印版和翻译版都已在大陆市场有售，所以也无需麻烦了。事实上，这本书所谓“自底向上”的讲述思想真的很有意思，从CMOS逻辑电路讲起，然后引出LC-3的ISA，然后讲述C语言的时候并非仅仅教C，而是连同底层的编译原理也一起讲授。可以说LC-3是本书的精髓所在，呵呵。</p>
+
+<p>回到标题，在该书的网站上提供了一个LC-3模拟器和C语言到LC-3的编译器。其中模拟器有Windows和Unix两个版本，而编译器只有for Linux的。正巧本周我们老师布置了一个作业，要把一段简短的C代码人肉翻译成LC-3汇编指令。于是我就想试试看那传说中的LC-3编译器了。不过说实话，对于Linux我只能算是一个门外汉，除了会用新立得以外我就什么都不懂了。而我们学校有个<a title="南京大学OPEN社团" href="http://www.njuopen.com/" target="_blank">专门宣传开源和Linux之类的社团</a>，我也没去（估计去那里的新生们大多数之前没有听说过Ubuntu这个单词吧）。好吧，我就自力更生一下，在Ubuntu环境下安装LC-3模拟器和C到LC-3的编译器。</p>
+
+<p><!--more--></p>
+
+<p>首先到该书的网站上去下载<a title="LC-3模拟器下载页面" href="http://highered.mcgraw-hill.com/sites/0072467509/student_view0/lc-3_simulator.html" target="_blank">LC-3模拟器</a>和<a title="C2LC-3编译器下载页面" href="http://highered.mcgraw-hill.com/sites/0072467509/student_view0/c_to_lc-3_compiler.html" target="_blank">C到LC-3的编译器</a>。把下载回来的zip文件解压，本例中我把它们解压到了<code>/home/clippit/lc3/lc3tools</code>和<code>/home/clippit/lc3/lcc-1.3</code>下。事实上下载下来的都是源码文件，我们需要做的就是手动编译下。</p>
+
+<p>打开终端（在应用程序→附件下），终端的默认目录“~”就是用户主文件夹，即<code>/home/clippit/</code>。更改目录的命令在Unix-like和Windows中都是一样的，输入“cd lc3/lc3tools”。</p>
+
+<p>事实上，大多数需要自己编译源码的软件都会附带一个详尽的README文档，有时候还会有一个INSTALL文档。在Windows下我们总是不屑于看readme.txt，因为大多数情况下里面都是下载站的广告文本^_^但是在Linux下就完全不同了，README文档往往包含着非常重要的信息，需要认真阅读。这一点也算是本次安装这两个小东西获得的经验吧。</p>
+
+<p>好了，继续话题。根据README描述，安装模拟器需要gcc、flex、wish这三个组件。事实上Ubuntu自己本身就有wish，gcc貌似也是自带的（也有可能是安装其他软件时安上的）。不管怎样，打开新立得软件包管理器，找一下相应的组件标记安装下便可。当然，如果你是终端控，用<code>sudo apt-get</code>也可以。</p>
+
+<p>接下来正式开始（其实前面的都是准备工作，哈哈~~）。回到刚才打开的终端窗口，输入：<code>./configure</code>。搞定之后，用gedit打开生成的Makefile文件，找到一句“<code>OS_SIM_LIBS = -lcurses</code>”，把其中的<code>“-lcurses</code>”删掉后保存（此文件为只读，还需要先去除只读属性）。根据README中的描述，这个是Debian系统中才必须做的一步。</p>
+
+<p>回到终端，输入：<code>make</code>。接下来终端便会调用Makefile中的脚本进行编译了。屏幕会出现很多信息，最后应该是0 errors，这样模拟器便编译成功了。在终端里输入“<code>./lc3sim</code>”便可以打开模拟器。如图所示，模拟器也是命令行的（囧），输入help获取帮助信息，而退出是quit。</p>
+
+<p> </p>
+
+<p>[caption id="attachment_449" align="aligncenter" width="500" caption="LC-3 Simulator for Unix/Linux"]<a href="http://dayanjia.com/wp-content/uploads/2009/12/lc3sim.PNG"><img class="size-medium wp-image-449" title="LC-3 Simulator for Unix/Linux" src="http://dayanjia.com/wp-content/uploads/2009/12/lc3sim-500x397.PNG" alt="LC-3 Simulator for Unix/Linux" width="500" height="397" /></a>[/caption]</p>
+
+<p>模拟器安装完成了，下面就是编译器了。在终端里输入“<code>cd ..</code>”回到上层目录，这里和Windows下有一点不同，cd和两个点之间需要打一个空格。然后再“<code>cd lcc-1.3</code>”来到编译器的目录。同样是先需要configure一下然后再make，不过这里和前面有一点不同了。这个configure脚本如果用普通账户执行的话会权限不够，所以需要用sudo命令来提升权限。然而又一个奇怪的问题出现了，输入“<code>sudo ./configure</code>”并输入账户密码后它居然提示“<code>Command not found</code>”。这其中的原因我也不清楚了，事实上我在这里卡壳了很久，<del datetime="2009-12-26T13:12:52+00:00">后来终于找到了解决办法，我们需要强制使用sh来运行这个脚本。完整的命令为：<code>sudo sh ./configure</code>。输入账户密码（不会显示出来）后便可以了。</del>接下来的操作驾轻就熟了，分别输入“<code>make</code>”和“<code>make install</code>”来编译源码并安装。</p>
+
+<p><strong>更新：出现上述问题的原因是那个configure脚本没有加上可执行的权限，所以我们需要sudo sh来强制让它执行。解决办法为：先输入<code>chmod +x configure</code>，然后就可以正常以<code>./configure</code>的方式来执行了。感谢<a title="Upsuper的网站" href="http://upsuper.org.cn/" target="_blank">Upsuper</a>的指导！</strong></p>
+
+<p>安装结束后，二进制可执行文件会存放在该目录下<code>/install/</code>的文件夹中，其中的lcc便是编译器的主程序。它同样是一个命令行程序，不带参数输入<code>./lcc</code>便可以看到用法说明。</p>
+
+<p>回到文章开头我提到的那个作业吧。作业要求把一段简短的C代码人肉翻译成LC-3汇编指令，C代码如下：</p>
+
+<p>[c]<br />
+main()<br />
+{
+	int a[5],i;</p>
+
+<p>	i = 4;<br />
+	while (i &gt;= 0) {<br />
+		a[i] = i;<br />
+		i--;<br />
+	}<br />
+}
+[/c]</p>
+
+<p>把文件保存为test.c，然后在终端中执行：./lcc test.c。它会生成一个a.asm的文件，同时还会调用安装的LC-3模拟器把.asm文件编译成.obj文件，但是由于关联的问题，这时候还是不能直接调用到的。不过这不影响我们获取它的LC-3汇编指令。但是打开a.asm文件后，我还是吓了一跳——生成的指令异常冗长，如果让我抄下来的话，将会是一件非常恐怖的事情……以下便是生成的a.asm文件的全部内容：</p>
+
+<p>[code]<br />
+.Orig x3000<br />
+INIT_CODE<br />
+LEA R6, #-1<br />
+ADD R5, R6, #0<br />
+ADD R6, R6, R6<br />
+ADD R6, R6, R6<br />
+ADD R6, R6, R5<br />
+ADD R6, R6, #-1<br />
+ADD R5, R5, R5<br />
+ADD R5, R6, #0<br />
+LD R4, GLOBAL_DATA_POINTER<br />
+LD R7, GLOBAL_MAIN_POINTER<br />
+jsrr R7<br />
+HALT</p>
+
+<p>GLOBAL_DATA_POINTER .FILL GLOBAL_DATA_START<br />
+GLOBAL_MAIN_POINTER .FILL main<br />
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;main;;;;;;;;;;;;;;;;;;;;;;;;;;;;<br />
+main<br />
+ADD R6, R6, #-2<br />
+STR R7, R6, #0<br />
+ADD R6, R6, #-1<br />
+STR R5, R6, #0<br />
+ADD R5, R6, #-1</p>
+
+<p>ADD R6, R6, #-6<br />
+ADD R7, R4, #5<br />
+ldr R7, R7, #0<br />
+str R7, R5, #0<br />
+ADD R0, R4, #1<br />
+LDR R0, R0, #0<br />
+JMP R0<br />
+lc3_L3_test<br />
+ldr R7, R5, #0<br />
+ADD R3, R5, #-5<br />
+add R3, R7, R3<br />
+str R7, R3, #0<br />
+ldr R7, R5, #0<br />
+ADD R3, R4, #4<br />
+ldr R3, R3, #0<br />
+ADD R6, R6, #-1<br />
+STR R0, R6, #0<br />
+ADD R6, R6, #-1<br />
+STR R3, R6, #0<br />
+NOT R3, R3<br />
+ADD R3, R3, #1<br />
+ADD R0, R7, R3<br />
+LDR R3, R6, #0<br />
+ADD R6, R6, #1<br />
+ADD R7, R0, #0<br />
+LDR R0, R6, #0<br />
+ADD R6, R6, #1<br />
+str R7, R5, #0<br />
+lc3_L4_test<br />
+ldr R7, R5, #0<br />
+ADD R3, R4, #3<br />
+ldr R3, R3, #0<br />
+NOT R7, R7<br />
+ADD R7, R7, #1<br />
+ADD R7, R7, R3<br />
+BRp L8<br />
+ADD R7, R4, #0<br />
+LDR R7, R7, #0<br />
+jmp R7<br />
+L8<br />
+ADD R7, R4, #3<br />
+ldr R7, R7, #0<br />
+lc3_L1_test<br />
+STR R7, R5, #3<br />
+ADD R6, R5, #1<br />
+LDR R5, R6, #0<br />
+ADD R6, R6, #1<br />
+LDR R7, R6, #0<br />
+ADD R6, R6, #1<br />
+RET</p>
+
+<p>GLOBAL_DATA_START<br />
+L3_test .FILL lc3_L3_test<br />
+L4_test .FILL lc3_L4_test<br />
+L1_test .FILL lc3_L1_test<br />
+L7_test .FILL #0<br />
+L6_test .FILL #1<br />
+L2_test .FILL #4<br />
+.END<br />
+[/code] </p>

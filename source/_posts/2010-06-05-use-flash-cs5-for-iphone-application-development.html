@@ -1,0 +1,100 @@
+---
+layout: post
+title: 小试Flash CS5开发iPhone应用程序
+categories:
+- 雕虫小技
+tags:
+- Flash
+- iPhone
+- iPodTouch
+published: true
+comments: true
+---
+<p>Adobe 在他们的 Flash CS5 中加入了将Flash发布为 iPhone/iPod Touch 应用程序的功能。这对广大移动平台的开发者来说本是一件大好事，不过一意孤行的苹果早早地就更新了开发者协议，<a title="iPhone开发协议禁用Adobe的 Flash-to-iPhone编译器" href="http://apple.solidot.org/article.pl?sid=10/04/10/0443201" target="_blank">严禁第三方跨平台编译器</a>，仅允许自家Mac OS上使用Objective-C原生编写的程序在App Store上架。这也基本上给Flash等其他开发和编译工具判了死刑。虽说这规定在CS5系列正式发布前几天出台，Adobe猝不及防。不过在广大的越狱机器上，我们可以轻松地安装非官方授权的应用程序。所以这新功能还是有点用武之地的，今天就让我们来看看Flash在iPhone/iPod Touch上的表现。</p>
+
+<p><!--more--></p>
+
+<p>在Flash CS5新建文档时，直接选择iPhone OS即可建立320x480尺寸的发布为iPhone应用程序的文件了。除了舞台小一点，和平时使用Flash没什么区别。而专属的iPhone应用程序发布设置，也和AIR平台的发布设置非常类似，有三个选项卡。</p>
+
+<p><a rel="attachment wp-att-640" href="http://dayanjia.com/2010/06/use-flash-cs5-for-iphone-application-development.html/flashiphonesetting1"><img class="alignnone size-medium wp-image-640" title="FlashiPhoneSetting1" src="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneSetting1-238x300.png" alt="" width="238" height="300" /></a> <a rel="attachment wp-att-641" href="http://dayanjia.com/2010/06/use-flash-cs5-for-iphone-application-development.html/flashiphonesettings2"><img class="alignnone size-medium wp-image-641" title="FlashiPhoneSettings2" src="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneSettings2-238x300.png" alt="" width="238" height="300" /></a> <a rel="attachment wp-att-642" href="http://dayanjia.com/2010/06/use-flash-cs5-for-iphone-application-development.html/flashiphonesettings3"><img class="alignnone size-medium wp-image-642" title="FlashiPhoneSettings3" src="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneSettings3-238x300.png" alt="" width="238" height="300" /></a></p>
+
+<p>设置选项中可以指定应用程序的名称、屏幕方向等，还可以指定图标。值得一提的是，想要真正发布ipa文件，你需要拥有Apple给开发者的数字证书和Provision Profiles。这个东东要在Apple的开发者网站上注册并且付费$99后才会获得（Adobe这不是热脸贴了Apple的冷屁股嘛~）。好在我们有专供测试用的文件，大家可以<a href="http://dayanjia.com/wp-content/uploads/2010/06/p12.zip">点击这里下载</a>，证书密码是1234。这里还有一个iPhone部署类型的选项，前两个是用来进行终端测试的，执行的效率可能会比后面两种低一些。
+<h2>Demo</h2>
+<a href="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneDemo1.png"><img class="alignleft size-thumbnail wp-image-646" title="FlashiPhoneDemo1" src="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneDemo1-124x200.png" alt="" width="124" height="200" /></a> 为了测试，我做了一个两帧的Demo程序。大家可以在<a title="Flash CS5 iPhone App Demo" href="http://code.google.com/p/clippit/downloads/detail?name=FlashCS5iPhoneAppDemo.fla&amp;can=2&amp;q=#makechanges" target="_blank">这里下载到fla源文件</a>。Flash生成ipa文件时花费的事件很长，有兴趣的可以<a title="Flash CS5 iPhone App Demo (ipa)" href="http://code.google.com/p/clippit/downloads/detail?name=Clippit%20Demo.ipa&amp;can=2&amp;q=#makechanges" target="_blank">点击这里下载ipa文件</a>实机测试。
+<h3>Frame 1</h3>
+第一帧上有个简单的动画和三个交互的按钮，按了按钮后会在上方显示该按钮实例的名称并播放一个音效，当然还有一个前往下一个画面的按钮。这一页大约算一个Hello World吧，因为都是用的非常基本的功能，例如动画的显示，简单的按钮交互等等。ActionScript 3 代码自然不长，如下：</p>
+
+<p>[as3]<br />
+import flash.events.Event;<br />
+import flash.media.Sound;</p>
+
+<p>stop();</p>
+
+<p>btn1.addEventListener(MouseEvent.CLICK,btnClick);<br />
+btn2.addEventListener(MouseEvent.CLICK,btnClick);<br />
+btn3.addEventListener(MouseEvent.CLICK,btnClick);<br />
+nextBtn.addEventListener(MouseEvent.CLICK,testPage);</p>
+
+<p>function btnClick(e:Event):void {<br />
+	var s:Sound = new MouseClickSound;<br />
+	s.play();<br />
+	text.text = e.target.name + &quot; Clicked!&quot;;<br />
+}</p>
+
+<p>function testPage(e:Event):void {<br />
+	nextFrame();<br />
+}
+[/as3]
+<h3><a href="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneDemo2.png"><img class="alignleft size-thumbnail wp-image-651" title="FlashiPhoneDemo2" src="http://dayanjia.com/wp-content/uploads/2010/06/FlashiPhoneDemo2-124x200.png" alt="" width="124" height="200" /></a>Frame 2</h3>
+第二帧其实是一个简单的Benchmark，我主要是想看看iPhone平台上的Flash能跑多快。据我观察，这其实可以看做是iPhone平台的AIR移动设备应用程序，也就是和J2ME类似的，是运行在虚拟机中的。Flash很可能是做了一个iPhone平台的Flash Player然后让swf在里面播放。这样效率如何真的就拿捏不准了。Benchmark有三项作业，第一是在舞台随机位置上绘制10000个静态的MovieClip，第二是将它们从舞台上去除，第三是计算1000000个0-10000之间整数的和。我在电脑上的测试环境中的结果详见左边的截图。该帧的AS如下：</p>
+
+<p>[as3]<br />
+import flash.events.Event;<br />
+import flash.text.TextField;<br />
+import flash.utils.getTimer;</p>
+
+<p>startBtn.addEventListener(MouseEvent.CLICK,startTest);</p>
+
+<p>function startTest(e:Event):void {<br />
+	var i:int;<br />
+	var time1 = getTimer();<br />
+	results.appendText(&quot;Test Started!\n&quot;);</p>
+
+<p>	var c:Array = new Array(10000);<br />
+	for (i=0; i&lt;10000; i++) {<br />
+		c[i] = new ico();<br />
+		c[i].x = Math.random() * 320;<br />
+		c[i].y = Math.random() * 480;<br />
+		addChild(c[i]);<br />
+	}<br />
+	var time2 = getTimer();<br />
+	results.appendText(&quot;Add 10000 MovieClip: &quot;+ (time2-time1)+&quot;ms\n&quot;);</p>
+
+<p>	for (i=0; i&lt;10000; i++) {<br />
+		removeChild(c[i]);<br />
+	}<br />
+	c = null;<br />
+	var time3 = getTimer();<br />
+	results.appendText(&quot;Remove 10000 MovieClip: &quot;+ (time3-time2)+&quot;ms\n&quot;);</p>
+
+<p>	var sum:Number = 0;<br />
+	for (i=0; i&lt;1000000; i++) {<br />
+		sum +=  Math.ceil(Math.random() * 10000);<br />
+	}<br />
+	results.appendText(&quot;1000000 random integers' sum: \n&quot;);<br />
+	var time4 = getTimer();<br />
+	results.appendText(sum+&quot;, time: &quot;+(time4-time3)+&quot;ms\n\n&quot;);<br />
+}
+[/as3]
+<h2>部署应用</h2>
+<a href="http://dayanjia.com/wp-content/uploads/2010/06/IMG_0036-e1275667021355.png"><img class="alignright size-full wp-image-660" title="IMG_0036" src="http://dayanjia.com/wp-content/uploads/2010/06/IMG_0036-e1275667021355.png" alt="" width="236" height="278" /></a>生成ipa文件后，你可以用各种方法将其安装到iPhone/iPod Touch中，比如可以用iTunes同步（要打过同步破解补丁的机器才行），也可以用无线或者蓝牙把文件传到机器上用<a href="http://dayanjia.com/2010/02/10-apps-you-should-install-after-jailbreak-your-ipod-touch-or-iphone.html" target="_blank">Install0us</a>安装。这时它就和普通的iPhone应用程序没什么区别了，可以看到它的图标，点击打开。下面两张图就是在我的iPod Touch上实际运行的截图，这里可以看到那个Benchmark的时间——果然和PC平台的处理器差的不是一点两点啊！</p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/06/IMG_0038.png"><img class="alignnone size-full wp-image-661" title="IMG_0038" src="http://dayanjia.com/wp-content/uploads/2010/06/IMG_0038.png" alt="" width="320" height="480" /></a></p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/06/IMG_0039.png"><img class="alignnone size-full wp-image-662" title="IMG_0039" src="http://dayanjia.com/wp-content/uploads/2010/06/IMG_0039.png" alt="" width="320" height="480" /></a></p>
+
+<p>通过截图可以看到，Flash的渲染质量还是不错的。不错这个效率实在是不敢恭维，在第一帧上，按下那三个按钮后会播放一个音效，这时上面的动画就会卡一下。至于第二帧的Benchmark，不提了……
+<h2>更多资源</h2>
+至此，Flash CS5开发iPhone应用程序的小小尝试就差不多了。大家知道，iPhone/iPod Touch最吸引人的交互方式是重力感应和多点触控。当然，在ActionScript 3中也有对它们的支持。在flash.sensors包中，有用于重力感应的<a href="http://help.adobe.com/zh_CN/Flash/CS5/AS3LR/flash/sensors/Accelerometer.html" target="_blank">Accelerometer</a>类和用于GPS位置识别的<a href="http://help.adobe.com/zh_CN/Flash/CS5/AS3LR/flash/sensors/Geolocation.html" target="_blank">Geolocation</a>类。而利用<a href="http://help.adobe.com/zh_CN/Flash/CS5/AS3LR/flash/ui/Multitouch.html" target="_blank">flash.ui.Multiouch</a>也可以轻松地让Flash程序支持多点触控。</p>
+
+<p><span style="color: #999999;">乐铺活动验证</span></p>

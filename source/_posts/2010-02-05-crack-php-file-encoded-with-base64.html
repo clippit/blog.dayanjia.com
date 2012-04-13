@@ -1,0 +1,125 @@
+---
+layout: post
+title: 破解Base64多重加密的PHP脚本
+categories:
+- 雕虫小技
+tags:
+- php
+- wordpress
+- 加解密
+- 南通中学
+published: true
+comments: true
+---
+<p><img class="size-full wp-image-513 alignright" title="No Base64" src="http://dayanjia.com/wp-content/uploads/2010/02/No-Base64.gif" alt="No Base64" width="332" height="202" /></p>
+
+<p>最近在帮我<a title="南通中学" href="http://www.ntzx.cn" target="_blank">母校</a>的小盆友们做一个“影评协会”的网站，根据他们的需求，我最后决定再次开始折腾WordPress。要知道和客户讲清楚一些技术性较强的事情是很困难的（比如“网站的内容结构和呈现外观是相互独立的”），不过经过初步的沟通，也最终大概有了一个思路。显然，根据他们的要求，一个简单的、只有日志列表的WordPress主题肯定是不够的。我需要一个内容丰富、灵活性强的主题。于是我在网上找到了一个专门定制收费WordPress主题的网站<a title="WooThemes" href="http://www.woothemes.com/" target="_blank">WooThemes</a>。说实话他们的主题都很不错，但是要收费的，价格还挺高。不过这难不倒我，一番邪恶的搜索之后便下载到了一些“别有用心人士”免费提供的版本。解开一看，模板的footer.php文件居然为了“保护版权”而是用的加密。显然，所谓的“版权”估计就是页面底部的“Theme by WooThemes”之类的话吧。唉，这样加密来加密去，岂不是和PHP的开源精神背道而驰？再说我邪恶一下就邪恶到底吧，破解之！
+<!--more-->
+打开footer.php文件一看，是这样的内容：<br />
+[php light="true" wraplines="false"]<br />
+&lt;?php /* WARNING: This file is protected by copyright law. To reverse engineer or decode this file is strictly prohibited. */<br />
+$o=&quot;QAAADjtjbnEnZGtmdHQ6JWFufwgAJTk7KAEgOQoNCg0OOyYqKicAAGFoaHNidSdUc2Z1c3QnKirNYAGwA1NuYwMgAdIlAUAnABQFCWRoaXNiOCBpcwH5AmECO2sqa2JhAk4OO280OQAAOzh3b3cnYmRvaCd0c3Vud0AAdApwb2J0L2Bic1hod3NuaGkCgC8gcGhoWAozWASBWHNuc2tiIAZPLi48JzgMsARQCg0AAAAnO3cFrwWvBa0FRnnAdw7oDPEAQQ05b3UUVwAAACcHsCFkaHd+PEQMJw3Dc29iCyBqYi8gXiALMgGEZWsBQWhgbmlhaC8BUikBZG5hJy8nD9+AARoBWGR1YmNuc3QgLicuJ3wTT/AgE08bogN3BpB6J2JrdGID4Dg5RmtrBAAnVW5gbx8gVWJ0YnVxYmMpJwQACg07ZicWAjolRGtuZGxlZmkAAGwnUGh1Y3d1YnR0J1NvYmoAAGIlJ291YmE6JW9zc3c9KCgEKHBwcClwArBiYypwApUqD2BqYnQEUClkaGooAVd3a3IPMHQBKGpoaWIATH4qamZsbmlgKgHzJScocBAgOiUSqFhlawfgJTkIkkUAsCcEticCwzsoZgAMOSc7bmpgJ3R1ZDolFxMVliBzAABiandrZnNiWGNudWJkc2h1QKB+GCMobmpmYGIIgWgKhHdpYCUnAFBwbmNzbzolMDMOEGIRoTolNj4AISUnZmtzOiVQaGgP03QlJygnYFv4ZiYEeihCIw8nFLAjYQBFNzUBBQCBJSlkaGs//yp1B0E0rTJvMm8ybQSSJ1AyfwdxAEgqwBNDOB8YIJ+VOB91WAWyMo8FRA5tAQ5HgCdkOJB0RYBuSKhjzw4CpUkaQmljSPUpkEtUCxNwd0E0M/MB8ESSwAAz/0PAYGhoYGtiWGZpZmt+c25BTWQ0ETs5JyUlNH90R79oWAP/NJI4QkCCvQjDI3NwbnNUETo7qSUk8BRRAdQA4yUDsMAVA5cK4iNAS0hFRktUXAKUWAKjWgnikAACwnRkHzBzJ3N+d2I6JXNif3MFeShtZnFmAWMlL6NvOLMENDdyAkd0KDExA/5gYnUpbXRLgQOjC/EAowWvBwEFrw4wBaJ0BoBzZnNydDQAAFB1JnBqYmtuaWIo5AwQ0ySiESVcIAIxaWZqYiBaWuEIEGhpACg4ZGZra2VmZGw6CvREAQQ1IWYAQGp3PGRocmlzOgTfdVwgaXJqHwJlYnUEswybH9I4wW1ROyhlaGN+DgEoCABvc2prAJAKDQ==&quot;;eval(base64_decode(&quot;JGxsbD0wO2V2YWwoYmFzZTY0X2RlY29kZSgiSkd4c2JHeHNiR3hzYkd4c1BTZGlZWE5sTmpSZlpHVmpiMlJsSnpzPSIpKTskbGw9MDtldmFsKCRsbGxsbGxsbGxsbCgiSkd4c2JHeHNiR3hzYkd3OUoyOXlaQ2M3IikpOyRsbGxsPTA7JGxsbGxsPTM7ZXZhbCgkbGxsbGxsbGxsbGwoIkpHdzlKR3hzYkd4c2JHeHNiR3hzS0NSdktUcz0iKSk7JGxsbGxsbGw9MDskbGxsbGxsPSgkbGxsbGxsbGxsbCgkbFsxXSk8PDgpKyRsbGxsbGxsbGxsKCRsWzJdKTtldmFsKCRsbGxsbGxsbGxsbCgiSkd4c2JHeHNiR3hzYkd4c2JHdzlKM04wY214bGJpYzciKSk7JGxsbGxsbGxsbD0xNjskbGxsbGxsbGw9IiI7Zm9yKDskbGxsbGw8JGxsbGxsbGxsbGxsbGwoJGwpOyl7aWYoJGxsbGxsbGxsbD09MCl7JGxsbGxsbD0oJGxsbGxsbGxsbGwoJGxbJGxsbGxsKytdKTw8OCk7JGxsbGxsbCs9JGxsbGxsbGxsbGwoJGxbJGxsbGxsKytdKTskbGxsbGxsbGxsPTE2O31pZigkbGxsbGxsJjB4ODAwMCl7JGxsbD0oJGxsbGxsbGxsbGwoJGxbJGxsbGxsKytdKTw8NCk7JGxsbCs9KCRsbGxsbGxsbGxsKCRsWyRsbGxsbF0pPj40KTtpZigkbGxsKXskbGw9KCRsbGxsbGxsbGxsKCRsWyRsbGxsbCsrXSkmMHgwZikrMztmb3IoJGxsbGw9MDskbGxsbDwkbGw7JGxsbGwrKykkbGxsbGxsbGxbJGxsbGxsbGwrJGxsbGxdPSRsbGxsbGxsbFskbGxsbGxsbC0kbGxsKyRsbGxsXTskbGxsbGxsbCs9JGxsO31lbHNleyRsbD0oJGxsbGxsbGxsbGwoJGxbJGxsbGxsKytdKTw8OCk7JGxsKz0kbGxsbGxsbGxsbCgkbFskbGxsbGwrK10pKzE2O2ZvcigkbGxsbD0wOyRsbGxsPCRsbDskbGxsbGxsbGxbJGxsbGxsbGwrJGxsbGwrK109JGxsbGxsbGxsbGwoJGxbJGxsbGxsXSkpOyRsbGxsbCsrOyRsbGxsbGxsKz0kbGw7fX1lbHNlJGxsbGxsbGxsWyRsbGxsbGxsKytdPSRsbGxsbGxsbGxsKCRsWyRsbGxsbCsrXSk7JGxsbGxsbDw8PTE7JGxsbGxsbGxsbC0tO31ldmFsKCRsbGxsbGxsbGxsbCgiSkd4c2JHeHNiR3hzYkd4c2JEMG5ZMmh5SnpzPSIpKTskbGxsbGw9MDtldmFsKCRsbGxsbGxsbGxsbCgiSkd4c2JHeHNiR3hzYkQwaVB5SXVKR3hzYkd4c2JHeHNiR3hzYkNnMk1pazciKSk7JGxsbGxsbGxsbGw9IiI7Zm9yKDskbGxsbGw8JGxsbGxsbGw7KXskbGxsbGxsbGxsbC49JGxsbGxsbGxsbGxsbCgkbGxsbGxsbGxbJGxsbGxsKytdXjB4MDcpO31ldmFsKCRsbGxsbGxsbGxsbCgiSkd4c2JHeHNiR3hzYkM0OUpHeHNiR3hzYkd4c2JHd3VKR3hzYkd4c2JHeHNiR3hzYkNnMk1Da3VJajhpT3c9PSIpKTtldmFsKCRsbGxsbGxsbGwpOw==&quot;));return;?&gt;<br />
+[/php]</p>
+
+<p>明眼人一看就知道代码采用了<a title="Base64 - 维基百科" href="http://zh.wikipedia.org/wiki/Base64" target="_blank">Base64</a>加密。整个脚本有一个加密字符串<code>$o</code>，一个<code>eval()</code>函数执行某段字符串经<code>base64_decode()</code>解码后的语句。我们首先让<code>eval()</code>执行的具体语句重见天日。将footer.php复制一份到本地调试环境，然后把这个<code>eval</code>修改成<code>echo</code>。浏览器执行后我们可以就可以看到它的内容了。选择浏览器的查看源代码，将其所有内容复制，替换掉<code>eval()</code>那一行，然后稍稍整理一下（许多IDE可以进行这项操作），可得（为保持排版，请点击展开）：</p>
+
+<p>[php collapse="true" wraplines="false"]<br />
+&lt;?php /* WARNING: This file is protected by copyright law. To reverse engineer or decode this file is strictly prohibited. */<br />
+$o = &quot;QAAADjtjbnEnZGtmdHQ6JWFufwgAJTk7KAEgOQoNCg0OOyYqKicAAGFoaHNidSdUc2Z1c3QnKirNYAGwA1NuYwMgAdIlAUAnABQFCWRoaXNiOCBpcwH5AmECO2sqa2JhAk4OO280OQAAOzh3b3cnYmRvaCd0c3Vud0AAdApwb2J0L2Bic1hod3NuaGkCgC8gcGhoWAozWASBWHNuc2tiIAZPLi48JzgMsARQCg0AAAAnO3cFrwWvBa0FRnnAdw7oDPEAQQ05b3UUVwAAACcHsCFkaHd+PEQMJw3Dc29iCyBqYi8gXiALMgGEZWsBQWhgbmlhaC8BUikBZG5hJy8nD9+AARoBWGR1YmNuc3QgLicuJ3wTT/AgE08bogN3BpB6J2JrdGID4Dg5RmtrBAAnVW5gbx8gVWJ0YnVxYmMpJwQACg07ZicWAjolRGtuZGxlZmkAAGwnUGh1Y3d1YnR0J1NvYmoAAGIlJ291YmE6JW9zc3c9KCgEKHBwcClwArBiYypwApUqD2BqYnQEUClkaGooAVd3a3IPMHQBKGpoaWIATH4qamZsbmlgKgHzJScocBAgOiUSqFhlawfgJTkIkkUAsCcEticCwzsoZgAMOSc7bmpgJ3R1ZDolFxMVliBzAABiandrZnNiWGNudWJkc2h1QKB+GCMobmpmYGIIgWgKhHdpYCUnAFBwbmNzbzolMDMOEGIRoTolNj4AISUnZmtzOiVQaGgP03QlJygnYFv4ZiYEeihCIw8nFLAjYQBFNzUBBQCBJSlkaGs//yp1B0E0rTJvMm8ybQSSJ1AyfwdxAEgqwBNDOB8YIJ+VOB91WAWyMo8FRA5tAQ5HgCdkOJB0RYBuSKhjzw4CpUkaQmljSPUpkEtUCxNwd0E0M/MB8ESSwAAz/0PAYGhoYGtiWGZpZmt+c25BTWQ0ETs5JyUlNH90R79oWAP/NJI4QkCCvQjDI3NwbnNUETo7qSUk8BRRAdQA4yUDsMAVA5cK4iNAS0hFRktUXAKUWAKjWgnikAACwnRkHzBzJ3N+d2I6JXNif3MFeShtZnFmAWMlL6NvOLMENDdyAkd0KDExA/5gYnUpbXRLgQOjC/EAowWvBwEFrw4wBaJ0BoBzZnNydDQAAFB1JnBqYmtuaWIo5AwQ0ySiESVcIAIxaWZqYiBaWuEIEGhpACg4ZGZra2VmZGw6CvREAQQ1IWYAQGp3PGRocmlzOgTfdVwgaXJqHwJlYnUEswybH9I4wW1ROyhlaGN+DgEoCABvc2prAJAKDQ==&quot;;<br />
+$lll = 0;<br />
+eval ( base64_decode ( &quot;JGxsbGxsbGxsbGxsPSdiYXNlNjRfZGVjb2RlJzs=&quot; ) );<br />
+$ll = 0;<br />
+eval ( $lllllllllll ( &quot;JGxsbGxsbGxsbGw9J29yZCc7&quot; ) );<br />
+$llll = 0;<br />
+$lllll = 3;<br />
+eval ( $lllllllllll ( &quot;JGw9JGxsbGxsbGxsbGxsKCRvKTs=&quot; ) );<br />
+$lllllll = 0;<br />
+$llllll = ($llllllllll ( $l [1] ) &lt;&lt; 8) + $llllllllll ( $l [2] );<br />
+eval ( $lllllllllll ( &quot;JGxsbGxsbGxsbGxsbGw9J3N0cmxlbic7&quot; ) );<br />
+$lllllllll = 16;<br />
+$llllllll = &quot;&quot;;<br />
+for(; $lllll &lt; $lllllllllllll ( $l );) {<br />
+	if ($lllllllll == 0) {<br />
+		$llllll = ($llllllllll ( $l [$lllll ++] ) &lt;&lt; 8);<br />
+		$llllll += $llllllllll ( $l [$lllll ++] );<br />
+		$lllllllll = 16;<br />
+	}<br />
+	if ($llllll &amp; 0x8000) {<br />
+		$lll = ($llllllllll ( $l [$lllll ++] ) &lt;&lt; 4);<br />
+		$lll += ($llllllllll ( $l [$lllll] ) &gt;&gt; 4);<br />
+		if ($lll) {<br />
+			$ll = ($llllllllll ( $l [$lllll ++] ) &amp; 0x0f) + 3;<br />
+			for($llll = 0; $llll &lt; $ll; $llll ++)<br />
+				$llllllll [$lllllll + $llll] = $llllllll [$lllllll - $lll + $llll];<br />
+			$lllllll += $ll;<br />
+		} else {<br />
+			$ll = ($llllllllll ( $l [$lllll ++] ) &lt;&lt; 8);<br />
+			$ll += $llllllllll ( $l [$lllll ++] ) + 16;<br />
+			for($llll = 0; $llll &lt; $ll; $llllllll [$lllllll + $llll ++] = $llllllllll ( $l [$lllll] ))<br />
+				;<br />
+			$lllll ++;<br />
+			$lllllll += $ll;<br />
+		}<br />
+	} else<br />
+		$llllllll [$lllllll ++] = $llllllllll ( $l [$lllll ++] );<br />
+	$llllll &lt;&lt;= 1;<br />
+	$lllllllll --;<br />
+}
+eval ( $lllllllllll ( &quot;JGxsbGxsbGxsbGxsbD0nY2hyJzs=&quot; ) );<br />
+$lllll = 0;<br />
+eval ( $lllllllllll ( &quot;JGxsbGxsbGxsbD0iPyIuJGxsbGxsbGxsbGxsbCg2Mik7&quot; ) );<br />
+$llllllllll = &quot;&quot;;<br />
+for(; $lllll &lt; $lllllll;) {<br />
+	$llllllllll .= $llllllllllll ( $llllllll [$lllll ++] ^ 0x07 );<br />
+}
+eval ( $lllllllllll ( &quot;JGxsbGxsbGxsbC49JGxsbGxsbGxsbGwuJGxsbGxsbGxsbGxsbCg2MCkuIj8iOw==&quot; ) );<br />
+eval ( $lllllllll );<br />
+return;<br />
+?&gt;<br />
+[/php]</p>
+
+<p>现在稍微有点眉目了，不过这其中还有一大堆Base64编码的字符串，和一堆以数个字母<code>l</code>命名的变量和变量函数……看了就头晕。不过我们不需要搞这些解码的过程，只需要解码的结果就可以了。注意到最后一句<code>eval ( $lllllllll );</code>，让我们把它改成<code>echo ( $lllllllll );</code>。再次在浏览器中执行，这下可以通过查看源代码看出一些端倪了吧（见以下代码）！</p>
+
+<p>[php htmlscript="true" highlight="24,25"]<br />
+	&lt;div class=&quot;fix&quot;&gt;&lt;/div&gt;</p>
+
+<p>	&lt;!-- footer Starts --&gt;<br />
+	&lt;div id=&quot;footer&quot;&gt;<br />
+        &lt;div class=&quot;content&quot;&gt;<br />
+            &lt;div class=&quot;col-left&quot;&gt;<br />
+            	&lt;h3&gt;&lt;?php echo stripslashes(get_option('woo_footer_left_title')); ?&gt;&lt;/h3&gt;<br />
+                &lt;p&gt;&lt;?php echo stripslashes(get_option('woo_footer_left')); ?&gt;&lt;/p&gt;<br />
+                &lt;div class=&quot;hr&quot;&gt;&lt;/div&gt;<br />
+                &lt;p&gt;&amp;copy; &lt;?php the_time('Y'); ?&gt; &lt;?php bloginfo(); ?&gt;. &lt;?php if ( get_option('woo_footer_credits') ) { echo stripslashes(get_option('woo_footer_credits')); } else { ?&gt;All Rights Reserved. <br />
+&lt;a title=&quot;Clickbank Wordpress Theme&quot; href=&quot;http://www.wicked-wordpress-themes.com/wordpress-plugins/wordpress-money-making-plugin&quot; target=&quot;_blank&quot;&gt;ClickBank wordpress plugin&lt;/a&gt; &lt;img src=&quot;&lt;?php bloginfo('template_directory'); ?&gt;/images/woothemes.png&quot; width=&quot;74&quot; height=&quot;19&quot; alt=&quot;Woo Themes&quot; /&gt;&lt;/a&gt;&lt;?php } ?&gt;&lt;/p&gt;<br />
+                <br />
+            &lt;/div&gt;<br />
+            &lt;div class=&quot;col-right&quot;&gt;<br />
+            	&lt;h3&gt;&lt;?php echo stripslashes(get_option('woo_footer_right_title')); ?&gt;&lt;/h3&gt;<br />
+                &lt;p&gt;&lt;?php echo stripslashes(get_option('woo_footer_right')); ?&gt;&lt;/p&gt;<br />
+            &lt;/div&gt;<br />
+        &lt;/div&gt;<br />
+        &lt;div class=&quot;fix&quot;&gt;&lt;/div&gt;<br />
+	&lt;/div&gt;<br />
+	&lt;!-- footer Ends --&gt;<br />
+	
+&lt;/div&gt;<br />
+&lt;?php wp_footer(); ?&gt;<br />
+&lt;?php if ( get_option('woo_google_analytics') &lt;&gt; &quot;&quot; ) { echo stripslashes(get_option('woo_google_analytics')); } ?&gt;<br />
+&lt;?php $twitter = get_option(&quot;widget_twitterwidget&quot;); ?&gt;<br />
+&lt;?php if ( $GLOBALS[twitter_widget] ) { ?&gt;<br />
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://twitter.com/javascripts/blogger.js&quot;&gt;&lt;/script&gt;<br />
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://twitter.com/statuses/user_timeline/&lt;?php echo $twitter['username']; ?&gt;.json?callback=twitterCallback2&amp;amp;count=&lt;?php echo $twitter['number']; ?&gt;&quot;&gt;&lt;/script&gt;<br />
+&lt;?php } ?&gt;</p>
+
+<p>&lt;/body&gt;<br />
+&lt;/html&gt;</p>
+
+<p>&lt;?<br />
+[/php]</p>
+
+<p>需要指出的是，在Chrome下高亮显示的两行并不能正确显示出，在23行<code>&lt;/div&gt;</code>结束后直接连接的是25行的 <code>"" ) { echo stripslashes(get_option('woo_google_analytics')); } ?&gt;</code>，中间缺了一块，不知道为什么。而在IE8中，源代码显示正确。如果实在不放心的话，可以把这段php放到调试器里去调试，直接获取最终那个变量的值，一定不会错的。</p>
+
+<p>至于为什么一上来就把最后一行的<code>eval</code>改成<code>echo</code>呢？事实上在尝试的过程中，我把之前全部的<code>eval()</code>函数都还原成了它的本来面目，方法就是把那个<code>eval</code>换成<code>echo</code>，然后删掉其后的所有内容，在浏览器中得到结果后替换那一行，再把其后的内容还原回去。如此反复几次后就可以把所有的<code>eval()</code>都还原，但是还原的结果其实对最终输出并没有影响，控制最终输出的还是那最后一行的<code>$lllllllll</code>（九个<code>l</code>）变量。总的看来，最终输出的原型存放在<code>$o</code>中，但是是经过了某种畸形的修改的，其后所有的php脚本都是在做还原<code>$o</code>中本来内容的工作，只不过这个还原的过程也显得非常畸形，基本没有可读性。而最后<code>$o</code>的本来内容放在了<code>$lllllllll</code>中，执行它即可。</p>
+
+<p>现在我们终于得到了<code>footer.php</code>的原始面目了，下面要做的就是把上面的那段代码覆盖掉文件原来的全部内容。当然，原来文件中为了保持上下文而在开头和结尾出现的<code>&lt;?</code>就不用加入了。至此，这个被Base64多重编码的文件被完全解密，其中主题制作人想千方百计保留的版权文字也一览无余。当然，人家做了一个主题也是很辛苦的，在网页最下面给他留一个链接也无可厚非。不过如此一还原，想必理论上也减轻了服务器的负担嘛！而且自己看了也舒坦，呵呵……</p>

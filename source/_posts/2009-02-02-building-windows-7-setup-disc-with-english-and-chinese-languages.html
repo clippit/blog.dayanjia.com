@@ -1,0 +1,258 @@
+---
+layout: post
+title: 制作中英文双语2in1的Windows 7安装光盘
+categories:
+- 雕虫小技
+tags:
+- Microsoft
+- Windows
+- 教程
+published: true
+comments: true
+---
+<p>最近稍稍研究了一下Windows AIK beta，发现对于vista版本的WAIK还是有一定改变的。大家相互学习，共同促进哈~~现在就来讲讲这两天的学习成果，教大家怎么样制作中英文二合一的Windows 7安装光盘~~</p>
+
+<p>最终效果是：无论是从Windows系统启动安装程序还是通过光盘引导系统进入WinPE环境下的安装程序，Windows 7安装程序都能提供中英文的双语界面供选择，且安装结束后是中英文的双语操作系统。<br />
+这样做的方便之处就是免去了各位手动安装中文语言包啦~~当然目前官方的中文语言包还不是太完善，还有部分英文的地方。等Windows 7 RTM了以后可以依葫芦画瓢地制作正式版的中英双语Windows 7安装光盘。</p>
+
+<p>首先说一下前期准备和一些约定：
+<ol>
+	<li>下载Windows AIK Beta：<a href="http://download.microsoft.com/download/D/1/4/D14C40CA-CAED-4B49-B9CF-8B07D8BA344F/KB3AIK_EN.iso">http://download.microsoft.com/download/D/1/4/D14C40CA-CAED-4B49-B9CF-8B07D8BA344F/KB3AIK_EN.iso</a>。下载完成后别忘了安装。本文为了方便叙述，约定为将WAIK安装到了C:\Windows AIK\中。</li>
+	<li>下载Windows 7 beta的简体中文语言包。本文为了方便叙述，约定为该语言包文件路径为F:\lp.cab。</li>
+	<li>用虚拟光驱加载Windows7的原始安装盘映像，将里面的全部文件复制到硬盘。本文为了方便叙述，约定为复制到了F:\win7\中。</li>
+	<li>下文将提及到一个操作：加载wim文件。本文为了方便叙述，约定为加载到C:\mount\中。请现在就将这个文件夹新建好</li>
+</ol>
+<!--more-->
+<h1>一、给Install.wim安装简体中文语言包</h1>
+安装好WAIK以后在开始菜单的所有程序中找到“Microsoft Windows AIK→Deployment Tools Command Prompt”,在上面点右键选择“以管理员身份运行”，出来一个命令提示符窗口，我们的大部分工作就要在这里进行。</p>
+
+<p>我们首先来给Install.wim动刀，给它安装上简体中文语言包，这里要提到WAIK的很厉害的一个功能。大家平常装语言包都是在Windows系统下安装的，但是WAIK可以不用安装目标系统就能给目标系统安装和卸载上各种功能包，当然这里面也包括语言包啦~~~这次的操作我们基本上就是用WAIK的一个命令——dism，它的意思就是Deployment Image Servicing and Management tool，总之是一个功能很强大的工具，融合了过去WAIK的多个工具的功能，使用更加方便。</p>
+
+<p>我们先来看一下install.wim文件都包含了几个系统，在命令提示符窗口中输入：</p>
+
+<p><code>dism /get-wiminfo /wimfile:f:\win7\sources\install.wim</code></p>
+
+<p>出来结果（下文叙述中，一般都按照这样“输入命令、运行结果”的格式编排，相应说明文字不再赘述）：
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Details for image : f:\win7\sources\install.wim</p>
+
+<p>Index : 1<br />
+Name : Windows 7 HOMEBASIC<br />
+Description : Windows 7 HOMEBASIC<br />
+Size : 8,531,004,787 bytes</p>
+
+<p>Index : 2<br />
+Name : Windows 7 HOMEPREMIUM<br />
+Description : Windows 7 HOMEPREMIUM<br />
+Size : 8,286,809,617 bytes</p>
+
+<p>Index : 3<br />
+Name : Windows 7 BUSINESS<br />
+Description : Windows 7 BUSINESS<br />
+Size : 8,077,378,840 bytes</p>
+
+<p>Index : 4<br />
+Name : Windows 7 ULTIMATE<br />
+Description : Windows 7 ULTIMATE<br />
+Size : 8,315,442,877 bytes</p>
+
+<p>The operation completed successfully.
+我们需要的是Windows 7 ULTIMATE，所以就加载Index 4的文件：</p>
+
+<p><code>dism /mount-wim /wimfile:f:\win7\sources\install.wim /index:4 /mountdir:c:\mount</code></p>
+
+<p>其中的“/mountdir:c:\mount”就是指定mount到哪个文件夹中，按照开始的约定，就是C:\mount。与过去不同，现在mount操作需要等待一段时间。
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Mounting image<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+接着便可以安装简体中文语言包了。</p>
+
+<p><code>dism /image:c:\mount /add-package /packagepath:"F:\lp.cab"</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Image Version: 6.1.7000.0</p>
+
+<p>Processing 1 of 1 - Adding package Microsoft-Windows-Client-LanguagePack-Package~31bf3856ad364e35~x86~zh-CN~6.1.7000.0<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+安装完成以后我们先保存对wim文件的修改。</p>
+
+<p><code>DISM /Commit-Wim /MountDir:c:\mount</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Saving image<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+这时候Windows7里面已经安装好了简体中文了，是不是很简单啊？不过我们为了实现真正的中英双语，还需要给安装程序做中英双语化的调整。我们需要用解压缩软件比如WinRAR打开lp.cab文件，在无数暴长的文件夹名称中找到setup文件夹，把它里面的sources文件夹解压缩到F:\win7中。还需要找到一个sources文件夹，同样把它解压缩到F:\win7中。<br />
+如果你嫌这一麻烦或者没有搞清楚怎么放文件夹结构的话，就依次执行下面的命令：</p>
+
+<p><code>expand.exe -f:* F:\lp.cab F:\lpexpanded<br />
+xcopy F:\lpexpanded\sources\license\* F:\win7\sources\license\ /cherkyi<br />
+xcopy F:\lpexpanded\setup\sources\* F:\win7\sources /cherkyi</code></p>
+
+<p>这一步完成以后我们继续。先检查一下install.wim当前的语言设置：</p>
+
+<p><code>dism /image:c:\mount /get-intl</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Image Version: 6.1.7000.0</p>
+
+<p>Reporting offline international settings.</p>
+
+<p>Default system UI language : en-US<br />
+System locale : en-US<br />
+Default time zone : Pacific Standard Time<br />
+User locale for default user : en-US<br />
+Location : 美国 (GEOID = 244)<br />
+Active keyboard(s) : 0409:00000409<br />
+Keyboard layered driver : 日语键盘(106/109 键)</p>
+
+<p>安装的语言: en-US<br />
+Type : Fully localized language.<br />
+安装的语言: zh-CN<br />
+Type : Partially localized language, MUI type.<br />
+Fallback Languages en-US</p>
+
+<p>The operation completed successfully.
+可以看到简体中文已经成功地安装进去了。接下来我们设置默认语言为简体中文：</p>
+
+<p><code>dism /image:c:\mount /set-SKUIntlDefaults:zh-cn</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Image Version: 6.1.7000.0<br />
+为以下对象设置 SKU 默认设置: zh-cn<br />
+The operation completed successfully.
+完成后我们再来检查一下：</p>
+
+<p><code>dism /image:c:\mount /get-intl</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Image Version: 6.1.7000.0</p>
+
+<p>Reporting offline international settings.</p>
+
+<p>Default system UI language : zh-CN<br />
+The UI language fallback is : en-US<br />
+System locale : zh-CN<br />
+Default time zone : China Standard Time<br />
+User locale for default user : zh-CN<br />
+Location : 中国 (GEOID = 45)<br />
+Active keyboard(s) : 0804:00000804, 0804:{81D4E9C9-1D3B-41BC-9E6C-4B40BF79E35E}{F3BA9077-6C7E-11D4-97FA-0080C882687E}, 0804:{81D4E9C9-1D3B-41BC-9E6C-4B40BF79E35E}{FCA121D2-8C6D-41FB-B2DE-A2AD110D4820}, 0804:{E429B25A-E5D3-4D1F-9BE3-0C608477E3A1}{54FC610E-6ABD-4685-9DDD-A130BDF1B170}, 0804:{E429B25A-E5D3-4D1F-9BE3-0C608477E3A1}{733B4D81-3BC3-4132-B91A-E9CDD5E2BFC9}, 0804:{E429B25A-E5D3-4D1F-9BE3-0C608477E3A1}{EF63706D-31C4-490E-9DBB-BD150ADC454B}<br />
+Keyboard layered driver : 日语键盘(106/109 键)</p>
+
+<p>安装的语言: en-US<br />
+Type : Fully localized language.<br />
+安装的语言: zh-CN<br />
+Type : Partially localized language, MUI type.<br />
+Fallback Languages en-US</p>
+
+<p>The operation completed successfully.
+可以看到果然修改过来了。接下来我们需要更新安装程序中的lang.ini文件：</p>
+
+<p><code>dism /image:c:\mount /gen-langini /distribution:f:\win7 /set-allintl:zh-cn</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Image Version: 6.1.7000.0<br />
+输入区域设置已设为: zh-cn<br />
+系统区域设置已设为: zh-cn<br />
+用户区域设置已设为: zh-cn<br />
+UI 语言已设为: zh-cn</p>
+
+<p>已生成新的 Lang.ini 文件<br />
+The operation completed successfully.
+对install.wim的处理就到这里结束，让我们最后保存修改并且卸载该文件。</p>
+
+<p><code>dism /unmount-wim /mountdir:c:\mount /commit</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Saving image<br />
+[==========================100.0%==========================]<br />
+Unmounting image<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+<h1>二、修改boot.wim文件使其支持中文</h1>
+第一步做完以后，从Windows系统中运行安装程序已经能够做到中英文双语了。但是如果从光盘引导安装的话还是英文的，所以我们还需要对boot.wim做一番修改，使其支持中文。需要说明的是，当前中文版的Windows PE 3.0还没有出来，所以暂时还不能做中文版的Windows PE，不过中英双语版的安装程序还是可以的。</p>
+
+<p>首先获取boot.wim的信息：</p>
+
+<p><code>dism /get-wiminfo /wimfile:f:\win7\sources\boot.wim</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Details for image : f:\win7\sources\boot.wim</p>
+
+<p>Index : 1<br />
+Name : Microsoft Windows PE (x86)<br />
+Description : Microsoft Windows PE (x86)<br />
+Size : 768,242,117 bytes</p>
+
+<p>Index : 2<br />
+Name : Microsoft Windows Setup (x86)<br />
+Description : Microsoft Windows Setup (x86)<br />
+Size : 1,008,257,195 bytes</p>
+
+<p>The operation completed successfully.
+可以看到我们需要修改Index 2对应的文件。那就加载Index 2，想必大家应该熟悉了：</p>
+
+<p><code>dism /mount-wim /wimfile:f:\win7\sources\boot.wim /index:2 /mountdir:c:\mount</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Mounting image<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+接下来安装中文支持，所谓的中文支持就是让这个Windows PE能够正常显示出中文，说白了就是添加了一些字体文件。安装WAIK的时候已经附带了相应的中文支持包，还是使用离线安装：</p>
+
+<p><code>dism /image:c:\mount /add-package /packagepath:"C:\Windows AIK\Tools\PETools\x86\WinPE_OCs\winpe-fontsupport-zh-cn.cab"</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Image Version: 6.1.7000.0</p>
+
+<p>Processing 1 of 1 - Adding package WinPE-FontSupport-ZH-CN-Package~31bf3856ad364e35~x86~~6.1.7000.0<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+下面还是需要解压缩那些安装程序的语言文件，大家可以安装上文相应的叙述如法炮制，不过现在的目标路径应该就是C:\mount\sources了。并且需要说明的是，此时我们运行的WinRAR必须采用管理员权限，也就是说要经过UAC权限提升。<br />
+由于简体中文版的Windows PE还没有出来，所以修改lang.ini文件这一步我们只能山寨一下了，尽管我们并不推荐手动更改lang.ini文件。首先在管理员权限下打开记事本（你可以右击记事本快捷方式选择以管理员身份运行，或者在那个管理员权限的cmd里面输入notepad后回车），打开C:\mount\sources\lang.ini文件，它里面应该是这样子：
+<blockquote>[Available UI Languages]<br />
+en-US = 3</blockquote></p>
+
+<p>[Fallback Languages]<br />
+en-US = en-us
+添加一句“zh-CN = 2”即可，修改后的文件变成这样：
+<blockquote>[Available UI Languages]<br />
+en-US = 3<br />
+zh-CN = 2</blockquote></p>
+
+<p>[Fallback Languages]<br />
+en-US = en-us
+修改好了以后对boot.wim的操作也算完成了，保存文件并卸载它：</p>
+
+<p><code>dism /unmount-wim /mountdir:c:\mount /commit</code>
+<blockquote>Deployment Image Servicing and Management tool<br />
+Version: 6.1.7000.0</blockquote></p>
+
+<p>Saving image<br />
+[==========================100.0%==========================]<br />
+Unmounting image<br />
+[==========================100.0%==========================]<br />
+The operation completed successfully.
+<h1>三、制作ISO文件</h1>
+其实做完了前面两步，完全可以用Microsoft Deployment Toolkit 2010结合WDS来大规模地部署这个Windows 7的中英双语版了，不过这方面我也不太熟悉，也就不班门弄斧了哈~~还是说正题，适合热衷于DIY的玩家的制作ISO文件吧。WAIK里面有一个工具oscdimg可以用来生成ISO映像，但是貌似它只能用来做比较小的Windows PE的CD-ROM映像，反正怎么弄2G多的DVD映像我还没搞清楚，那么我们就使用第三方专门的ISO映像软件，例如UltraISO来制作ISO文件吧。</p>
+
+<p>我们首先需要提取安装光盘中的引导文件。用UltraISO打开原版的Windows 7安装盘映像，然后选“启动→保存引导文件”得到一个4K的小文件。为了方便大家，我传上来了大家直接下载最后的附件即可，省得自己提取了。貌似WAIK的Tools下面有一个etfsboot.com文件，估计就是这个引导文件，具体是不是我也没有比对过。</p>
+
+<p>然后选“文件→新建→UDF DVD映像”，然后选“启动→加载引导文件”，打开刚才的那个小文件即可。这时候我们可以看到光盘信息变成了“可启动 UDF”。然后在下方把F:\win7下面的所有文件拖动到上面，有必要的话可以改一个卷标。最后保存这个ISO文件即可。<br />
+到这一步就算全部完成啦~~大家可以刻盘，也可以在虚拟机里面测试。</p>

@@ -1,0 +1,84 @@
+---
+layout: post
+title: 中文编码什么的，最讨厌了……
+categories:
+- 雕虫小技
+tags:
+- Django
+- Python
+- 故障处理
+published: true
+comments: true
+---
+<p>最近貌似很流行这句卖娇的话，好吧，就用它来作为这篇文章的标题好了。首先在这里向各位亲爱的读者说声抱歉，一个月来忙忙碌碌，所以没有时间更新博客，今天总算心血来潮写一篇了。最近刚刚接触了Python，发觉它真是一个挺有意思的语言。首先抛弃了花括号的束缚，世界也并不是特别糟糕；强大的切片功能又让人们抛弃了一堆烦人的取子集的函数；Python Shell又让人感觉它不是一种编程语言而可以简单地当作系统的批处理脚本来使用；但是完整的面向对象特性和丰富的标准库扩展库又赋予了Python超强的功能和广泛的用途。怪不得Google App Engine刚推出的时候就仅支持使用Python（现在也支持Java了）。由于我们要使用Python做Web开发，所以还得搞一个Web开发框架，比如Django。胡扯了这么多貌似和本文的主题没有什么关联，其实中文乱码的问题就得从这其中说起。</p>
+
+<p><strong>本文将简要介绍计算机中的中文编码和Django中的中文编码问题。</strong></p>
+
+<p><strong><!--more--></strong>
+<h2>中文编码的曲折发展</h2>
+<h3>早期发展</h3>
+计算机是美国人发明的，1960年ASCII（美国信息互换标准代码）的出台，让英语的编码得到了统一。相信大家都明白ASCII就是把英文字母、数字、符号等字符和8 Bit的二进制序列映射起来（实际上只用到了7 Bit）。如此一来不同的计算机之间根据这个通行的标准便可以进行信息交换了。事实上ASCII编码连完整的西欧语言字母都不能显示完整，128个位置更是远远不能满足中文的需要。</p>
+
+<p>中国在计算机领域的起步较晚，1981年中国大陆官方公布了GB2312编码，规范了使用简体字地区的汉字编码。说白了这也是一种映射关系，GB2312是ASCII的超集，单它使用双字节的编码长度，一共收录了6763个汉字和希腊字母、日文假名等其他字符。例如汉字“啊”的编码就是0xB0A1。别看这是4个16进制字符，实际上其第一个字节的范围是0xA1-0xF7，第二个字节的范围是0xA1-0xFE。</p>
+
+<p>同时在使用繁体字的地区，也有通行的汉字编码（Big5），世界各种语言在数字化存储和交换信息的时候都会使用一套编码，于是这世界上就出现了N多种字符编码，甚至一种语言还有几种编码方式（多是字节存储顺序不同或者是之前编码的扩充）。于是相同的二进制序列在不同的编码方式下对应的字符就不一样了，所以就出现了各种乱码的问题。<strong>选错了编码就如同选错了函数，相同的输入会产生截然不同的输出结果。</strong>
+<h3>Unicode</h3>
+<a href="http://upload.wikimedia.org/wikipedia/zh/0/06/Unicode_logo.gif"><img class="alignleft" title="Unicode" src="http://upload.wikimedia.org/wikipedia/zh/0/06/Unicode_logo.gif" alt="" width="109" height="109" /></a>随着IT业全球化的发展，各种字符编码的困惑更加严重，这时候，一种声音响彻全球：“让我们统一起来吧”！于是乎，Unicode“粉墨登场”了。Unicode致力于让所有的字符在一个编码下就能显示出来，制定标准的非营利机构The Unicode Consortium一直在努力工作，目前Unicode的最新版本是5.2。</p>
+
+<p>既然Unicode要表示所有字符，那么编码长度就要足够长。目前实际应用的Unicode编码长度是16位，即两个字节，这样可以理论上表示出2<sup>16</sup>=65536个字符。这虽然已经很多了，但是对于“所有字符”仍是不够的，所以最新的编码标准是32位的，32位中首位始终位0，因此可以表示出2<sup>31</sup>中字符。</p>
+
+<p>Unicode的推出自然是方便了各国之间的交流，尤其是东亚地区的中日韩交流。但是使用英语的国家就不高兴了，我们原本使用ASCII，一个字符只需要一个字节，现在需要两个字节了，未来甚至需要四个字节，这不是巨大的浪费吗？！（或许他们可以写一本书叫《美国不高兴》）事实上，根据Unicode编码，人们又搞出了许多实现方式，称作Unicode Translation Format，其缩写便是我们熟知的UTF。目前用的最广泛的是UTF-8，它的编码字节长度是可变的，具体为：对于ASCII中的字符，采用1个字节，而其他带符号的拉丁文字使用2个字节，大部分常用的中日韩字符采用3个字节，而其他非常不常用的使用4字节。</p>
+
+<p><strong>为了更好的国际化支持，我个人非常推崇放弃使用GB2312（GBK）等单一语种的编码，全面转向Unicode。</strong>事实上如今的操作系统和软件都能很好地支持UTF-8。<strong>但是UTF-8真的能高枕无忧吗？答案显然是否</strong>（要不然我文章还怎么写得下去啊？）
+<h2>Python中的Unicode</h2>
+最新稳定版的Python对Unicode的支持是非常好的，而Django内部也是完全Unicode化的。而今天我却遇到了一个奇怪的问题。根据Django的MVC结构，我们建立一个站点，然后创建一个view.py文件作为视图部分：</p>
+
+<p>[python]<br />
+from django.http import HttpResponse<br />
+import datetime</p>
+
+<p>def current_datetime(request):<br />
+    now = datetime.datetime.now()<br />
+    html = &quot;服务器当前时间 %s.&quot; % now<br />
+    return HttpResponse(html)<br />
+[/python]</p>
+
+<p>可以看到我们这里用到了中文字符。在urls.py中设定好路由：</p>
+
+<p>[python]<br />
+from django.conf.urls.defaults import *</p>
+
+<p>urlpatterns = patterns('mysite.views',<br />
+    ('^time/$', 'current_datetime'),<br />
+)
+[/python]</p>
+
+<p>启动服务器后，访问http://127.0.0.1:8000/time/，却得到了错误。
+<blockquote>Non-ASCII character '\xe6' in file /home/Clippit/mysite/../mysite/views.py on line 9, but no encoding declared; see http://www.python.org/peps/pep-0263.html for details (views.py, line 9)</blockquote>
+<a rel="attachment wp-att-738" href="http://dayanjia.com/2010/07/trouble-about-chinese-character-encode.html/django-error"><img class="alignright size-medium wp-image-738" title="django error" src="http://dayanjia.com/wp-content/uploads/2010/07/django-error-300x255.png" alt="" width="300" height="255" /></a>它说有一个非ASCII字符出现，检查view.py文件，确是为UTF-8编码，而改成GBK后依然有问题（这个是显然的……）。异常提示中给出了一个<a href="http://www.python.org/dev/peps/pep-0263/">PEP 0263</a>的链接，作为一个初学者，跑过去看PEP这样高深的内容显然有点心虚。</p>
+
+<p>爬了半天英文后，解决方案很简单，有两种。其一是在py文件的第一行加上一行特殊格式的注释，显式声明文件的编码方式：</p>
+
+<p>[python light="true"]# -*- coding: utf-8 -*- [/python]</p>
+
+<p>其二是采用保存成带有BOM的UTF-8文件。
+<h2>万恶的BOM</h2>
+再次回到理论知识普及部分，这个BOM是什么东西呢？事实上我曾经已经被它搞过好几次了。BOM是Byte Order Marker的简称，根据它的名字可以推测出它是用来表示字节顺序的记号。事实上这个BOM是随着UTF-16的诞生而产生的。UTF-16也是一种Unicode的表示方式，相比于UFT-8它更加接近原始Unicode编码规则（ISO 10646规定的通用字符集UCS-2）。如果编码小于0x10000，UTF-16采用2字节表示，这便是UCS-2中的65535个字符；对于U+10000 到 U+10FFFF中的字符，则使用4个字节。UTF-16因此也不兼容于ASCII。</p>
+
+<p>但是，和Unicode初衷相悖的现象出现了，在不同的操作系统上，读取UTF-16编码的字节顺序是不一样的，因此便出现了UTF-16BE和UTF-16LE两种分支。例如汉字“水”，UTF-16编码为0x6C34，它使用两个字节存储。在UTF-16BE中，这两个字节的存储顺序是6C, 34，而UTF-16LE却是34, 6C。这就如同编译器解析函数时参数入栈的顺序一样，可以从第一个到最后一个也可以从最后一个到第一个。<strong>Windows和Linux采用的是UTF-16LE，而Mac OS X却采用UTF-16BE。可以想象，读取字节的顺序不同，解析出来的字符自然完全不一样。</strong></p>
+
+<p>为了解决这个问题，我们就需要在文本文件的最开头放置一个BOM，用来说明这个文件是采用的UTF-16LE还是UTF-16BE。对应UTF-16LE，这个字符是FF FE，对应UTF-16BE，这个字符是FE FF。这样解析的时候就可以确定它到底是哪一种UTF-16的编码了。</p>
+
+<p>[caption id="attachment_752" align="alignright" width="300" caption="Windows 7的记事本中，可以选择四种编码方式保存文件"]<a rel="attachment wp-att-752" href="http://dayanjia.com/2010/07/trouble-about-chinese-character-encode.html/notepad-unicode"><img class="size-medium wp-image-752" title="notepad unicode" src="http://dayanjia.com/wp-content/uploads/2010/07/notepad-unicode-300x98.png" alt="" width="300" height="98" /></a>[/caption]</p>
+
+<p>说了这么多UTF-16的，和UTF-8有什么关系呢？<strong>这就要怪无聊的微软了，微软的Windows操作系统中，会给采用UTF-8保存的文件也加上一个BOM，内容是是三字节的EF BB BF。事实上，在UTF-8文件中并不需要BOM。微软这么做主要是为了兼容它之前不支持UTF-8的操作系统（Windows 98之流）。微软的一意孤行给计算机标准造成了许多影响，其他操作系统必须要能准确读取这些奇怪的带有BOM的UTF-8编码的文件，否则就会在文本开头显示出一个奇怪的字符。</strong>Windows自从2000开始便一直采用UTF-16LE作为系统内部处理数据的编码。Windows 7的记事本提供了四种编码方式，如右图，从上到下依次为操作系统语言默认编码（ANSI，简体中文系统中就是GBK）、UTF-16LE、UTF-16BE、UTF-8。
+<h3>带BOM的UTF-8文本文件是程序代码的隐藏杀手</h3>
+[caption id="attachment_746" align="alignleft" width="300" caption="可以看到文本最开头的一个特殊字符"]<a rel="attachment wp-att-746" href="http://dayanjia.com/2010/07/trouble-about-chinese-character-encode.html/bom-utf-8"><img class="size-medium wp-image-746" title="BOM UTF-8" src="http://dayanjia.com/wp-content/uploads/2010/07/BOM-UTF-8-300x184.png" alt="" width="300" height="184" /></a>[/caption]</p>
+
+<p>我以前的PHP经验告诉我，不要创建带有BOM的UTF-8文件。PHP中有些函数，例如<code>header()</code>, <code>setcookie()</code>要求在HTTP头没有发送给客户端之前执行。如果UTF-8文件带有BOM，这个BOM就会被最先发给浏览器，从而header就发出去了，这时候再遇到上面的函数便会发生Fatal Error。而在各种类Unix操作系统中这些BOM会影响许多和编程、脚本有关程序的运行，如gcc会报告源码档开头有无法识别的字符。<strong>这个问题往往很难察觉到，可谓是程序代码的隐藏杀手。</strong>
+<h2>回到Python：结语</h2>
+<a rel="attachment wp-att-749" href="http://dayanjia.com/2010/07/trouble-about-chinese-character-encode.html/django-right"><img class="alignright size-medium wp-image-749" title="django right" src="http://dayanjia.com/wp-content/uploads/2010/07/django-right-300x138.png" alt="" width="300" height="138" /></a>PEP 0263中提到的BOM的解决办法也仅仅推荐给Windows系统。通过添加特殊注释的方法，我们便可以在浏览器中获取正确结果了。<strong>事实上，更好的方案是尽量不要在源代码里出现Unicode字符，可以将其放在模板和数据库中。</strong>一般情况下在稍微大一点的项目中，也没有什么人在view.py里面直接硬编码吧？</p>
+
+<p><em>题图素材来源：</em><a href="http://hults2.deviantart.com/art/Darth-Clippy-49625587"><em>http://hults2.deviantart.com/art/Darth-Clippy-49625587</em></a></p>
+
+<p>woshao_003dfc249bac11df9e5e000c295b2b8d</p>

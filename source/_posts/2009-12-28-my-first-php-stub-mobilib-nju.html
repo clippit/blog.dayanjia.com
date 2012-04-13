@@ -1,0 +1,33 @@
+---
+layout: post
+title: 我的第一个纯代码小作品——MobiLib @NJU
+categories:
+- 自娱自乐
+- 侃侃而谈
+tags:
+- php
+- 南京大学
+published: true
+comments: true
+---
+<p><img class="alignleft size-full wp-image-452" title="MobiLib @NJU" src="http://dayanjia.com/wp-content/uploads/2009/12/Puzzle_stub_cropped.png" alt="MobiLib @NJU" width="150" height="182" />其实我在有这个WordPress博客之前也曾经发布过一些比较简单的东西，大多数都是汉化软件。这其中比较近的就是去年国庆时发布的<a title="【2.5版发布】孢子简体中文语言包“大陆习惯完美版”" href="http://dayanjia.com/2008/10/spore-chinese-language-pack-2-5.html" target="_blank">孢子Spore简体中文包</a>，此外还有当时引起巨大争议的<a title="发布！Universal Extractor 1.2.1 汉化版！" href="http://dayanjia.com/2006/07/universal-extractor-1-2-1-chinese.html" target="_blank">Universal Extractor汉化版</a>，再老一点的但至今还有人发邮件来咨询我相关功能的是一个名叫<a title="http://dayanjia.com/2006/01/super-mario-xp-chinese.html" href="http://dayanjia.com/2006/01/super-mario-xp-chinese.html" target="_blank">Super Mario XP的同人游戏的汉化版</a>。不过这次我有了第一个纯写代码的小作品了，便是<strong>MobiLib @NJU</strong>。<strong>这是一个适合于手机等小屏幕终端的查询南京大学馆藏书目的小网站。<span style="color: #0000ff;">网址是：</span><a title="MobiLib @NJU" href="http://MobiLib.LilyStudio.org" target="_blank"><span style="color: #0000ff;">http://MobiLib.LilyStudio.org</span></a></strong></p>
+
+<p>这个网站其实只有两个页面，一个是搜索页一个是详细信息页，采用PHP编写。PHP也是我这个学期才开始学的，以前一直觉得他很强大，但是一直没有工夫去学，如今感谢南京大学<a title="小百合工作室" href="http://www.lilystudio.org/" target="_blank">小百合工作室</a>让我有了这个机会来走进PHP。于是初学的小小成果就这样诞生了！在这里要感谢<a title="Lightory's blog" href="http://www.lightory.net/" target="_blank">Lightory</a>提供CSS技术支持，继续阅读文章可以看到截图和更多信息。</p>
+
+<p><!--more--></p>
+
+<p>[caption id="attachment_455" align="alignleft" width="320" caption="搜索结果页"]<img class="size-full wp-image-455  " title="MobiLib@NJU搜索结果页" src="http://dayanjia.com/wp-content/uploads/2009/12/MobiLib1.PNG" alt="搜索结果页" width="320" height="480" />[/caption]</p>
+
+<p>其实我们并没有和学校的图书馆进行任何洽谈，所以也无法拿到图书馆的数据库使用权限。这个网站查到的信息其实是利用抓取图书馆官方搜索页面上的相关信息并重新排版得来的。当然，机器爬网页这么繁琐的活以我的能力还尚不能解决，所以就使用了人家编写好的PHP类<a title="PHP Simple HTML DOM Parser" href="http://simplehtmldom.sourceforge.net/" target="_blank">PHP Simple HTML DOM Parser</a>。调用这个类时指定网页元素的方法就和写CSS选择器一样，非常简单，定位到相应的元素后就可以对它进行各种操作，比如提取文本，提取标签属性等等了。</p>
+
+<p>这个Library虽然好用，但是貌似有一个缺点，就是消耗内存过大。当我在测试时，使用一些简单的关键字导致会存在上万个匹配结果时，PHP脚本消耗的内存往往会超过20M。由于PHP默认的内存使用上线是16M，因此会报错。虽然在它提供了一个clear的方法，但是clear必须是不再使用抓取的那个网页后才能用的，所以尽管最后php显示内存使用不是太大，但是事实上在执行过程中的消耗还是挺大的。</p>
+
+<p>[caption id="attachment_456" align="alignright" width="320" caption="书籍详细信息页"]<img class="size-full wp-image-456  " title="MobiLib@NJU详细信息页" src="http://dayanjia.com/wp-content/uploads/2009/12/MobiLib2.PNG" alt="书籍详细信息页" width="320" height="480" />[/caption]</p>
+
+<p>事实上用手机也能浏览图书馆官方查询页面，而且官方页面上的信息量更大，那为什么还要再做一个手机版的呢？用手机上的UCweb或者是Opera Mini之类的第三方浏览器访问官方页面当然是可以的，但是有一点不方便的就是官方查询页面设计时并没有考虑到手机等小屏幕终端，尽管在电脑这样的大屏幕上看内容非常全面。而这个手机版尽量简化了作用不大的信息，仅仅保留了书名、作者、出版社等书籍基本信息，最关键的是提供了图书馆内的馆藏详细情况和索书号。事实上大家查询图书馆时99%需要的信息这里都可以提供了，况且界面还这么简洁，让你站在任何一个角落都可以看到查到图书馆里的书籍，节约了时间，何乐而不为呢？</p>
+
+<p><strong>最后透露一个小消息</strong>，在人无聊的时候总会找点事情来做，于是前段时间我就无聊到想给这个网站做一个专门为iPhone/iPod Touch定制的界面。事实上网上有一个叫做iWebKit的工具包提供了制作这些网页所需的CSS和JS等，所以改造起来还是非常方便的，不过由于时间有限我也不可能天天无聊下去，所以到现在还没有完工，呵呵。我可以考虑在寒假时花一点点时间把它完成。这里先透露一下截图吧！</p>
+
+<p>[caption id="attachment_453" align="alignnone" width="320" caption="初始页面"]<img class="size-full wp-image-453 " title="MobiLib for iPhone" src="http://dayanjia.com/wp-content/uploads/2009/12/MobiLib_iPhone1.PNG" alt="初始页面" width="320" height="480" />[/caption]</p>
+
+<p>[caption id="attachment_454" align="alignnone" width="320" caption="搜索结果页面"]<img class="size-full wp-image-454 " title="MobiLib for iPhone" src="http://dayanjia.com/wp-content/uploads/2009/12/MobiLib_iPhone2.PNG" alt="搜索结果页面" width="320" height="480" />[/caption] </p>

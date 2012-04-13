@@ -1,0 +1,150 @@
+---
+layout: post
+title: 给优酷视频的“顶”“踩”自动刷票
+categories:
+- 雕虫小技
+tags:
+- Python
+- 教程
+published: true
+comments: true
+---
+<p>最近一个高中同学说他们学校正在搞一个DV比赛，参赛者把自己的作品上传到优酷，然后其他人在浏览的时候点击“顶”按钮来投票。最终每个DV作品的“顶”的数量将会成为视频评奖的一个依据。于是，某人就心生歹念了，这个“顶”的数量是不是可以刷出来呢？来源于国外著名分享站点Digg的这一创意，实现起来其实很简单，优酷是怎样进行视频的“顶”和“踩”的操作的呢？其实这个所谓比赛没什么大不了的，技术无罪嘛！于是某人的好奇心涌上心头，手一抖就打开了某个优酷视频页面……</p>
+
+<p><!--more--></p>
+
+<p><h2>手动刷票</h2>
+<a rel="attachment wp-att-1148" href="http://dayanjia.com/2010/12/vote-updown-digg-in-youku-automatically.html/2010-12-14-19-56-46"><img class="alignnone size-full wp-image-1148" title="2010-12-14 19-56-46" src="http://dayanjia.com/wp-content/uploads/2010/12/2010-12-14-19-56-46.png" alt="" width="329" height="254" /></a></p>
+
+<p><a rel="attachment wp-att-1148" href="http://dayanjia.com/2010/12/vote-updown-digg-in-youku-automatically.html/2010-12-14-19-56-46"></a>在给一个视频进行“顶”或“踩”的操作后，默认就不能再进行操作了。当然，这点小技俩多半是通过cookies来控制的（在中国ADSL盛行的环境下，根据IP来控制实在是荒唐）。我们顶过一个视频后，将浏览器的cookies清空，再刷新一下页面，果然又可以操作了。
+<h2>“顶”“踩”背后的HTTP操作</h2>
+很显然，这个操作是通过JavaScript进行后台Ajax操作实现的。具体来说，多半是向一个URL发送一个请求，包含了一些参数。想要知道浏览器在访问网页时在背后干了些什么，我们就需要一些抓包工具了。在这里我们使用的是<a href="http://www.fiddler2.com/" target="_blank">Fiddler</a>，一款专门的HTTP debug工具，它仅会抓取HTTP请求的内容，像视频流下载的数据就看不到了，因此抓取结果会清晰很多。</p>
+
+<p>我们打开视频网页，开启Fiddler捕捉，点一下“顶”，我们便可以发现Fiddler中出现了两个结果，其中一个方法为POST，另一个为GET。根据经验，我们自然是更加关注POST方法的请求啦～</p>
+
+<p><a rel="attachment wp-att-1151" href="http://dayanjia.com/2010/12/vote-updown-digg-in-youku-automatically.html/2010-12-14-22-01-36"><img class="alignnone size-large wp-image-1151" title="2010-12-14 22-01-36" src="http://dayanjia.com/wp-content/uploads/2010/12/2010-12-14-22-01-36-580x371.png" alt="" width="580" height="371" /></a></p>
+
+<p>让我们看看Request的内容：</p>
+
+<p>[code]<br />
+POST http://v.youku.com/QVideo/~ajax/updown HTTP/1.1<br />
+Host: v.youku.com<br />
+Connection: keep-alive<br />
+Referer: http://v.youku.com/v_playlist/f5376248o1p0.html<br />
+Content-Length: 73<br />
+Origin: http://v.youku.com<br />
+X-Prototype-Version: 1.5.0<br />
+X-Requested-With: XMLHttpRequest<br />
+Content-type: application/x-www-form-urlencoded; charset=UTF-8<br />
+Accept: text/javascript, text/html, application/xml, text/xml, */*<br />
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.19 Safari/534.13<br />
+Accept-Encoding: gzip,deflate,sdch<br />
+Accept-Language: zh-CN,zh;q=0.8<br />
+Accept-Charset: GBK,utf-8;q=0.7,*;q=0.3<br />
+Cookie: isRemoveOnPlayComplete=true; YOUKUSESSID=csrinf00hpfb4u42k7hsfmk7k4; updown_XMjI5NTg4OTM2=1; updown_XMjI5NTc2Nzcy=1; updown_XMjI5NTc1ODQ0=1; PlayListTag=[{&quot;videoid&quot;:&quot;57393961&quot;,&quot;sec&quot;:18,&quot;folderid&quot;:&quot;5332617&quot;,&quot;order&quot;:&quot;1&quot;,&quot;pos&quot;:&quot;7&quot;}]; wi={ ico_first: 'n5.gif', ico_secend: 'd5.gif', title_first: '%E5%A4%9C%E9%97%B4%3A%E5%B0%8F%E9%9B%AA', title_secend: '%E7%99%BD%E5%A4%A9%3A%E4%B8%AD%E9%9B%AA', phenomenon: '%E5%B0%8F%E9%9B%AA%E8%BD%AC%E4%B8%AD%E9%9B%AA', temperature: '-1%E2%84%83%2F2%E2%84%83', city: '%E5%8D%97%E4%BA%AC' }; __utmarea=103128-20383-3-1; __ysuid=12916513607349bb</p>
+
+<p>__ap=%7B%22videoId%22%3A%22XMjI5NjIwNDgw%22%2C%22type%22%3A%22up%22%7D&amp;_=<br />
+[/code]</p>
+
+<p>于是一切都一目了然了，POST的Entry中是经过URL Encode的字符串，我们把它解码后便可以得到<code>__ap={"videoId":"XMjI5NjIwNDgw","type":"up"}&amp;_=</code>。很明显吧，我们在点击“顶”的时候，浏览器后台向<code>http://v.youku.com/QVideo/~ajax/updown</code>发送了一个POST请求，请求内容为视频ID和类型（up还是down）。知道了这些，实现脚本自动刷票便不再是难事。</p>
+
+<p>但是我们还有一个疑问，发送请求时cookies是一起发给浏览器的，服务端会不会用这个来判断是否是真实用户投票呢？看来我们还是得从JavaScript下手。
+<h2>投票的JavaScript简单分析</h2>
+通过简单的查找，我们可以发现优酷实现相关功能的代码在<a href="http://static.youku.com/v1.0.0627/v/js/v4/v4.js" target="_blank">v4.js</a>这个脚本中，不过这个脚本是混淆过的。这个简单，网上有很多JS解混淆的工具（例如<a title="JavaScript(JS) 压缩 / 混淆 / 格式化(美化)" href="http://jscompress.sinaapp.com/" target="_blank">这个</a>）。搞定后，我们可以找到一个updown函数：</p>
+
+<p>[javascript]<br />
+updown: function(type) {<br />
+	if ((act = Nova.Cookie.get(&quot;updown_&quot; + videoId2)) !== false &amp;&amp; act != null) {<br />
+		return Interact.showUpDowned(act)<br />
+	}<br />
+	Interact.updownType = type;<br />
+	Nova.QVideo.updown({<br />
+		videoId: videoId2,<br />
+		type: type<br />
+	},<br />
+	this.updownCallback)<br />
+},<br />
+[/javascript]</p>
+
+<p>可以发现，这个函数其实是调用了<code>Nova.QVideo.updown</code>，囧。这个QVideo的JS是直接写在HTML页面中的：</p>
+
+<p>[javascript]<br />
+Nova.QVideo = {<br />
+_name : 'QVideo',<br />
+ ........................<br />
+ updown : function(param, callback, id) { return nova_call('/QVideo/~ajax/updown', param, callback, id); }<br />
+};<br />
+[/javascript]</p>
+
+<p>于是再找到<a href="http://static.youku.com/v1.0.0627/js/nova.js" target="_blank">nova.js</a>，这个<code>nova_call</code>其实是一个辅助函数，它创建一个<code>NovaCall</code>对象，这似乎继承了<a title="Prototype JavaScript framework" href="http://www.prototypejs.org/" target="_blank">Prototype</a>这个JS框架中关于Ajax请求的内容。</p>
+
+<p>[javascript title="NovaCall相关代码（点击展开）" collapse="true"]<br />
+NovaCall = Class.create();<br />
+Object.extend(Object.extend(NovaCall.prototype, Ajax.Request.prototype), {<br />
+    initialize: function(url, param, callback, id, remote) {<br />
+        this.id = id;<br />
+		if(param===undefined){<br />
+			param = new Object;<br />
+		}<br />
+		param = JSON.stringify(param);<br />
+		if(remote!=undefined){<br />
+			//跨域名版本<br />
+			//callback 必须是字符串<br />
+        	var method = 'get';<br />
+        	this.url = url + '?__ap=' +encodeURIComponent(param) + '&amp;__ai=' + id + '&amp;__callback=' + callback;<br />
+			Nova.addScript(this.url);<br />
+		}else{<br />
+        	var method = 'post';<br />
+        	this.url = url;<br />
+		    this.callback = callback;<br />
+        	this.transport = Ajax.getTransport(url);<br />
+        	this.setOptions({method: method, parameters: '__ap='+encodeURIComponent(param)});<br />
+        	this.options.onComplete = this.recv.bind(this);<br />
+        	this.options.onFailure = this.error.bind(this);<br />
+        	this.request(this.url);<br />
+		}</p>
+
+<p>    },<br />
+    recv: function(trans, obj) {<br />
+        if (!obj) {<br />
+            try { obj = eval('('+trans.responseText+')'); } catch(e) {}<br />
+        }<br />
+        this.callback(obj, this.id);<br />
+    },<br />
+    error: function() {<br />
+        if (window.nova_error_hook) window.nova_error_hook();<br />
+    else Nova.log('Error in transport.');<br />
+    }<br />
+});<br />
+[/javascript]</p>
+
+<p>仔细看看，它竟然没有主动发送有关cookies的信息，看来我多虑了。绕了半天，我们也总算看出了“顶”和“踩”的内部实现方式，也加深了我们对其的理解。
+<h2>Python实现自动刷票</h2>
+于是我们便可以使用Python中的<code>urllib2</code>来自动刷票了，模拟HTTP请求即可。为了增加“真实性”，我们在请求头部加了诸如User-Agent这几个参数。友情提醒：以下代码仅供参考。</p>
+
+<p>[python]<br />
+#!/usr/bin/python<br />
+# -*- coding:utf-8 -*-</p>
+
+<p>import urllib2, time</p>
+
+<p>url = 'http://v.youku.com/QVideo/~ajax/updown'<br />
+param = '__ap=%7B%22videoId%22%3A%22XMjI5NjIwNDgw%22%2C%22type%22%3A%22up%22%7D&amp;_='<br />
+headers = {'Referer': 'http://v.youku.com/v_playlist/f5376248o1p0.html',<br />
+           'x-prototype-version': '1.5.0',<br />
+           'x-requested-with': 'XMLHttpRequest',<br />
+           'User-Agent': 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C)',<br />
+           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}</p>
+
+<p>request = urllib2.Request(url, param, headers)<br />
+i = 1<br />
+while i&lt;300:<br />
+	response = urllib2.urlopen(request)<br />
+	print '%s Count: %s' % (response.read(), i,)<br />
+	time.sleep(2)<br />
+	i += 1<br />
+[/python]</p>
+
+<p><a rel="attachment wp-att-1154" href="http://dayanjia.com/2010/12/vote-updown-digg-in-youku-automatically.html/2010-12-14-22-32-40"><img class="alignnone size-full wp-image-1154" title="2010-12-14 22-32-40" src="http://dayanjia.com/wp-content/uploads/2010/12/2010-12-14-22-32-40.png" alt="" width="357" height="363" /></a></p>
+
+<p>最后声明一下，本文仅供学习研究，请不要用于恶意用途哦～以上Python代码基于GPL v3发布。</p>

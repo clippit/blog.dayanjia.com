@@ -1,0 +1,38 @@
+---
+layout: post
+title: 有些Wordpress插件，你伤不起……
+categories:
+- 雕虫小技
+tags:
+- wordpress
+- 故障处理
+published: true
+comments: true
+---
+<p>熟悉Wordpress的朋友都知道Gravatar，这是一个号称“全球通用头像”的服务。用户只需要在Gravatar网站上用E-mail注册后上传一个头像，今后在支持这项服务的网站上就可以直接根据那个E-mail获取自己的头像，无需在其他网站再次上传图片。Wordpress内置了对Gravatar的支持，许多国外的网站和开源建站程序例如<a title="Drupal" href="http://drupal.org/" target="_blank">Drupal</a>都可以集成这项功能，就连国内的Discuz!也有Gravatar的插件。但是令人不解的是，Gravatar于日前荣获国家级防火墙金牌认证，这使得无数Wordpress中的用户头像变成了一个个小红叉，看了颇不舒服。为此，有人专门制作了网站服务器中转Gravatar头像的插件。为了使自己博客的页面显得更加完美，我义无反顾地安装了它，于是，悲剧就这样开始了……</p>
+
+<p><!--more-->
+<h2>悲剧的开始：WP Gravatar Mini Cache</h2>
+看到网上有朋友写了这个<a title="WP插件Gravatar-Mini-Cache" href="http://www.evlos.org/2010/01/25/my-first-plugin-mini_gravatar_cache/" target="_blank">Gravatar缓存的插件</a>，于是便下载安装，激活后便没有多管。没想到过了一会儿打开我的博客，居然打不开了，ping一下也是很高的延迟，还会有丢包。这时我的第一感觉是，VPS的线路又抽风了。但是当我多次刷新页面后，居然给了我一个HTTP 500错误，于是立马感觉事情没这么简单。</p>
+
+<p>用SSH登录到VPS，我先用<code>uptime</code>看了下系统负载，乖乖，居然1min、5min、15min的平均负载达到了两位数，不卡才怪啊！于是又用<code>free -m</code>看看内存，512MB的内存基本全部被吃掉了，交换区也用掉了将近五分之一。这到底是神马情况？</p>
+
+<p>事实上，我一开始并没有想到是这个插件的原因，我想，不如先重启一下VPS试试看吧。重启以后情况依旧，看了看占用CPU资源和内存的几个进程，无一例外都是各种php-cgi。这个时候我才想起来去看Apache的日志。赶紧去<code>/var/log/httpd</code>去看<code>access_log</code>和<code>error_log</code>。<code>access_log</code>里面全是“<code>"OPTIONS * HTTP/1.0" 200 - "-" "Apache/2.2.3 (CentOS) (internal dummy connection)"</code>”这句话，不知道什么意思。于是又去看<code>error_log</code>，那里面基本上是三行报告内容的重复：</p>
+
+<p>[code light="true"][Sun Oct 17 14:32:52 2010] [warn] mod_fcgid: process 8078 graceful kill fail, sending SIGKILL<br />
+[Sun Oct 17 14:32:58 2010] [notice] mod_fcgid: call /home/dayanjia/public_html/index.php with wrapper /home/dayanjia/fcgi-bin/php5.fcgi<br />
+[Sun Oct 17 14:32:58 2010] [notice] mod_fcgid: process /home/dayanjia/public_html/index.php(8058) exit(communication error), get stop signal 9[/code]</p>
+
+<p>各种进程僵尸……这就让我更加摸不着头脑了……完全不可捉摸的错误报告啊……这时候我猛然想起那个插件，到插件目录下删掉它，再看系统负载，果然恢复正常了，网页也可以正常打开了。
+<h2>插件连锁反应</h2>
+这件事本来就这么结束了，但是文章开始提到的Gravatar头像无法显示的问题还是没有解决啊。看了看那个引起问题的插件的代码，短短十几行，在<code>get_avatar()</code>上加了一个Hook而已，怎么会造成这么严重的问题呢？于是到网上Google，找到<a title="新版 Gravatar 緩存" href="http://kan.willin.org/?p=1320" target="_blank">另一个方法</a>，按照作者的方法，在主题函数中新加一个<code>my_avatar</code>，然后把<code>get_avatar</code>全部换成<code>my_avatar</code>，避免增加Hook。按照此方法一试，果然在日志的评论页面能够正常显示头像了。</p>
+
+<p>但是事情还没有结束。我在侧边栏上使用了一个<a title="最新评论插件 WP-RecentComments" href="http://www.neoease.com/wp-recentcomments/" target="_blank">WP-RecentComments</a>插件，那里面也会显示头像。于是我去编辑插件的源码，也按照上面的方法替换了get_avatar函数。于是当我再一次刷新的时候……悲剧又重现了！</p>
+
+<p>难道罪魁祸首是WP-RecentComments这个显示最新评论的插件？这个时候我又想到，我还安装了<a href="http://www.linkedin.com/in/w3edge" target="_blank">W3 Total Cache</a>这个缓存插件，把缓存插件禁用后，居然又可以正常打开首页和日志页了！这还真是扑朔迷离啊……事实上，能够引起整站HTTP 500错误的，估计也有这样的缓存插件能干的出来。</p>
+
+<p>我禁用了这个缓存插件，还原了WP-RecentComments代码，又重新安装了Gravatar Mini Cache。打开网站，一切正常！接着我又去重新启用W3 Total Cache并重新进行了配置。终于现在它们能够相安无事了……头像也能正常显示了……
+<h2>结论</h2>
+总结一下，这次的事件由三个插件连锁反应产生。由于Gravatar Mini Cache给<code>get_avatar()</code>加了一个Hook，WP-RecentComments在调用头像时就会激活Gravatar Mini Cache的函数，然后W3 Total Cache过来不知怎么的掺和一下，就整站挂掉了。似乎是处理顺序的问题导致php脚本陷入了一个死循环，可以看到VPS上的php进程不断地开启，变成僵尸，然后挂掉……</p>
+
+<p>Wordpress以插件众多，功能丰富著称，但是对于那些喜欢闹脾气的Wordpress插件，你真的伤不起……</p>

@@ -1,0 +1,46 @@
+---
+layout: post
+title: 网页浏览器“内核”与“外壳”的是是非非
+categories:
+- 雕虫小技
+tags:
+- 资料
+- 软件
+published: true
+comments: true
+---
+<p><span style="LINE-HEIGHT: 150%"><p>自从网页浏览器诞生之日起，各公司间的竞争、各“派别”拥护者之间的争吵，就从未停止过。直至今日，包括Internet Explorer、Firefox、Safari、Opera、Maxthon等各式各样的网页浏览器在市场上争奇斗艳，好不热闹。当然这其中也少不了恶意垄断、枪手炒作、网友争论等等。<br />事实上，还有很多人对浏览器的一些特性还不甚了解，所以就会有诸如“MT再好也只是一个壳”“有本事像FF那样自己弄内核去”“FF比IE的安全性高多了”这样的言论。起初，我对这些也不甚了解，也不愿参与这些争论。后来我慢慢地接触到了一些关于浏览器的东西，不敢独享，整理出来以FAQ的形式和大家分享，希望能提高大家对网页浏览器这种软件的认知度。
+<p><font color="#808080">※本文文本为</font><a title="大眼夹的ITECN博客" href="http://blogs.itecn.net/blogs/clippit/">大眼夹</a><font color="#808080">原创，其中部分资料来自于ｗｉｋｉｐｅｄｉａ（避河蟹，用全角^_^）等网络媒体。我不是枪手，我力争保持自己的言论的中立性。</font>
+<p><font color="#0080ff">Q1：经常听人家说什么浏览器“内核”和“外壳”，它们都是什么意思？<br /></font><strong>A1</strong>：“内核”只是一个通俗的说法，其英文名称为“Layout engine”，翻译过来就是“排版引擎”，也被称为“页面渲染引擎”（下文中各种说法通用）。它负责取得网页的内容（HTML、XML、图像等等）、整理信息（例如加入CSS等），以及计算网页的显示方式，然后会输出至显示器或打印机。所有网页浏览器、电子邮件客户端以及其它需要编辑、显示网络内容的应用程序都需要排版引擎。<br />而浏览器的“外壳”便很好理解了，它是一个面向用户的界面，也就是网页浏览器为我们实现的各种功能。
+<p><font color="#0080ff">Q2：浏览器的内核有哪些？</font><br /><strong>A2</strong>：事实上，有很多种（废话！），但是常见的有Trident、Gecko、WebCore、Presto等。 </p>
+<p><font color="#0080ff">Q3：Trident是什么内核？</font><br /><strong>A3</strong>：Trident（又称为MSHTML），是微软开发的一种排版引擎。它的第一个版本随着1997年10月Internet Explorer第四版的发布而发布。随后，Trident不断地被更新和完善：</p>
+<ul>
+<li>Trident II（IE5）——增进对CSS1.0的支持及对CSS2重大的变更
+</li><li>Trident III（IE5.5）——修正部分CSS的排版控制
+</li><li>Trident IV（IE6）——修正了一部分box-model的错误以及增加了“兼容模式（Quirks Mode）”切换功能，以增加对文件类型描述（Document Type Definition，DTD）的支持
+</li><li>Trident V（IE7）——修正许多CSS排版处理上的错误以及增加对PNG格式alpha通道（半透明）的支持 </li></ul>
+<p>不光是IE，Windows中的许多地方也使用了Trident的技术，包括从Windows 98到Windows Server 2003所有版本的Windows Explorer、Windows 98及其后续所有版本的视窗操作系统内的Windows Help程序。此外，像RealPlayer、Windows Media Player、Windows Live Messenger、Outlook Express等等也使用了Trident技术。也正因为如此，Trident无法从Windows系统中彻彻底底地卸载掉，就算是彻底卸载了，Windows的许多功能也会出现问题。<br />使用Trident内核的网页浏览器有：AOL Explorer、Avant、Internet Explorer、Maxthon、Netscape Browser (v.8)、Sleipnir、TheWorld、腾迅TT等。 </p>
+<p><font color="#0080ff">Q4：Gecko是什么内核？</font><br /><strong>A4</strong>：Gecko是套开放源代码的、以C++编写的网页排版引擎。这软件原本是由网景通讯公司开发的，现在则由Mozilla基金会维护。<br />由于Gecko是开源的，所以使用Gecko的网页浏览器也很多，其中的领军人物便是Mozilla Firefox。此外还有AOL for Mac OS X、Camino、Epiphany、Flock、Galeon、Netscape Browser (v.8)、Sleipnir、Maxthon等。
+<p><font color="#0080ff">Q5：WebCore是什么内核？</font><br /><strong>A5</strong>：WebCore是苹果公司开发的排版引擎，它是在另外一个排版引擎“KHTML”的基础上而来的。苹果电脑于2002年采纳了KHTML，作为开发Safari浏览器之用，并发布所修改的最新及过去版本源代码。后来发表了开放源代码的WebCore及WebKit引擎，它们均是KHTML的衍生产品。使用WebCore的主要有Safari，此外还有OmniWeb、Shiira、Swift等。
+<p><font color="#0080ff">Q6：Presto是什么内核？</font><br /><strong>Q6</strong>：Presto是一个由Opera Software开发的浏览器排版引擎，供Opera 7.0及以上使用。此外，Macromedia Dreamweaver （MX版本及以上）和Adobe Creative Suite 2也使用了Presto的内核。
+<p><font color="#0080ff"><strong>Q7：<u>（强烈推荐）浏览器的内核和外壳有什么联系？</u></strong><br /></font><strong>A7</strong>：刚才已经说到，内核负责处理网页的内容，而外壳负责提供给用户一些功能。外壳的某些功能是需要联系到内核的，比如保存网页上的图片；而有些功能是不需要经过内核的，比如前进后退功能（当然，在载入了URL以后还是需要经过内核的）。<br />相信大家都使用过XP中控制面板里的“用户帐户”功能，这实际上可以给我们一个更加感性的认识。用户帐户的操作界面实际上就是一个小型且功能单一的网页浏览器，它通过调用IE内核来显示主界面，而上方的“上一步”“下一步”等按钮便是浏览器外壳所提供的功能。<br />说到这里，我们可以回看文章开头提到的一些网友的言论。有些人认为，Maxthon仅仅是附庸在IE之上的一个浏览器，根本不值得和IE、Firefox相提并论。这其实并不妥当。首先，Maxthon是支持Trident和Gecko双内核的（支持Gecko内核时需要单独安装Gecko组件，而且目前的2系列貌似没有Gecko内核支持），所以它并不是“IE的附庸”。此外，我们已经知道，浏览器分有内核和外壳两部分。以这个眼光来看，Maxthon是Maxthon Shell+Trident（或Gecko），而Internet Explorer是IE Shell+Trident，Firefox是FF Shell+Gecko，这三款浏览器的地位实际上是一样的。只不过IE Shell和Trident都是微软开发，而FF Shell和Gecko都是Mozilla基金会在维护。同时，说IE是“IE内核”，FF是“FF内核”也是不准确的，毕竟弄IE Shell和Trident的肯定不是微软的同一个小组，而FF Shell和Gecko肯定也不是Mozilla基金会的同一个小组在维护（更何况Gecko原来也不是Mozilla开发的，原先Mozilla只是网景公司的非正式组织）。当然不可否认，拥有了内核和外壳的微软和Mozilla，在开发浏览器的能力方面肯定是要高于Maxthon的，Maxthon不可能掌握到关键技术。
+<p><font color="#0080ff">Q8：各种内核哪一个更好一点呢？<br /></font><strong>A8</strong>：哪一个更好，这个问题的确很难回答，应该说是各有侧重点。Trident内核使用最多，因此很多网页甚至只兼容Trident内核，而导致使用Gecko时会出现各种各样的问题。但是Trident也是最“乱”的一个内核。而Gecko、WebCore、Presto则更符合各种国际标准，显得更加“严谨”。
+<p><font color="#0080ff">Q9：各种内核都有些什么不同呢？</font><br /><strong>A9</strong>：这个问题，在ｗｉｋｉｐｅｄｉａ上有非常详细的说明。现把相关链接列表如下：</p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines" target="_blank">排版引擎比较（概述）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28HTML%29" target="_blank">排版引擎比较（HTML）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28XML%29" target="_blank">排版引擎比较（XML）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28XHTML%29" target="_blank">排版引擎比较（XHTML）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28graphics%29" target="_blank">排版引擎比较（图形）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28CSS%29" target="_blank">排版引擎比较（CSS）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28DOM%29" target="_blank">排版引擎比较（DOM）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28WHATWG%29" target="_blank">排版引擎比较（WHATWG）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28ECMAScript%29" target="_blank">排版引擎比较（ECMAScript）</a>
+</li><li><a href="http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28ECMAScript%29" target="_blank">排版引擎比较（SVG）</a> </li></ul>
+<p><font color="#0080ff">Q10：有没有什么组织对排版引擎做测试的呢？就像杀毒软件界的VB100%那样？</font><br /><strong>A10</strong>：还真有这么一个组织，它叫做网页标准计划小组（Web Standards Project）。他们推出了一个综合测试的网页，取名为Acid。由于现在的是第二版，所以又叫Acid2。<br />该测试页透过严谨的编码，可快速辨认网页排版的漏洞，而测试要求是排版引擎需能排出如下图中的笑脸，在测试刚推出时，没有一个浏览器可排出要求的图像。<br /><a href="http://webstandards.org/act/acid2/reference.png" target="_blank" atomicselection="true"><img src="http://webstandards.org/act/acid2/reference.png" /></a> <br />目前能够完全显示出正确图形的浏览器有：Safari 2.0.3、Konqueror 3.5、Opera 9、Mozilla Firefox 3.0 Alpha、iCab、Prince 5.1等。下面列出了其他未通过浏览器的表现（图片属于Public Domain）</p>
+<p><a href="http://photo1.bababian.com/upload2/20070718/9A8CFFCB3B4FA4CE79388C1857345753.jpg" target="_blank" atomicselection="true"><img src="http://photo1.bababian.com/upload2/20070718/9A8CFFCB3B4FA4CE79388C1857345753_500.jpg" /></a> <br />↑Acid2在IE6下的表现</p>
+<p><a href="http://photo1.bababian.com/upload2/20070718/6072BBF97EB861878DC7A883CEE85A21.jpg" target="_blank" atomicselection="true"><img src="http://photo1.bababian.com/upload2/20070718/6072BBF97EB861878DC7A883CEE85A21_500.jpg" /></a>&nbsp;<br />↑Acid2在IE7下的表现</p>
+<p>&nbsp;<a href="http://photo1.bababian.com/upload2/20070718/92091811B57CFCC83D43F8E4E5CAB119.jpg" target="_blank" atomicselection="true"><img src="http://photo1.bababian.com/upload2/20070718/92091811B57CFCC83D43F8E4E5CAB119_500.jpg" /></a> <br />↑Acid2在FireFox1.5和2.0版本下的表现</p>
+<p><a href="http://photo1.bababian.com/upload2/20070718/37D087628945FB950B843E21F4A7EE17.jpg" target="_blank" atomicselection="true"><img src="http://photo1.bababian.com/upload2/20070718/37D087628945FB950B843E21F4A7EE17_500.jpg" /></a> <br />↑Acid2在Netscape7.2下的表现</p>
+<p>如果大家有兴趣，也可以去测试测试。Acid2的测试网址在：<a href="http://www.webstandards.org/files/acid2/test.html" target="_blank">http://www.webstandards.org/files/acid2/test.html</a>。具体的测试技术详解在：<a href="http://www.webstandards.org/action/acid2/guide/" target="_blank">http://www.webstandards.org/action/acid2/guide/</a>。</p>
+<p>通过前面10个问题的解答，相信大家已经对网页浏览器的内核和外壳，特别是内核，有了更深的了解。我同时希望各位今后在讨论问题的时候少一点激进，多一点文明，少一点无赖，多一点睿智。</p></p></p></p></p></p></p></p></p></span></p>

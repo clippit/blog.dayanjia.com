@@ -1,0 +1,77 @@
+---
+layout: post
+title: 测试RESTful Web Services的三种方法
+categories:
+- 雕虫小技
+tags:
+- Internet
+- Web开发
+- 资料
+published: true
+comments: true
+---
+<p>如今网站搞个开放API，弄个RESTful Web Services似乎早不是新鲜事了。尤其在Twitter、Facebook、Google等先行者的推动下，获取其他网站的资源并进行<a title="Mashup (web application hybrid)" href="http://en.wikipedia.org/wiki/Mashup_(web_application_hybrid)" target="_blank">Mashup</a>变得越来越普遍。如今在SNS大行其道的日子里，你不搞个“推荐该内容到人人网/开心网/新浪微博”这样的链接，你都不好意思出去见人说“我是做网站的”。</p>
+
+<p>就连我院的线上教学支持系统都打算分离出核心数据（即学生和课程的信息），通过REST风格的Web服务来提供这些中心数据，支持其他功能（例如课程论坛、作业发布和提交等）的实现。这样做的好处自然是分离的数据可以再提供给今后更多的服务使用，比起传统的全部使用本地数据库的方法减少了冗余和错误的产生。而其缺点在于加大了开发难度，以前可以很轻松的诸如数据表中外键的功能全部得从第三方资源实现，一定程度上降低了网站的运行效率。同时，进行REST的开发和测试也变得不那么直接了。虽然各种语言都有HTTP请求相关的类库，但是本着<a title="Reinventing the wheel" href="http://en.wikipedia.org/wiki/Reinventing_the_wheel" target="_blank">不重复发明轮子</a>的精神，本文介绍了几种方便的测试RESTful Web Services的工具。</p>
+
+<p><!--more-->
+<h2>REST简单介绍</h2>
+所谓REST，是Representational State Transfer，这个词汇的中文翻译很不统一，而且很晦涩，有叫“具象状态传输”，有叫“表象化状态转变”，等等。通俗地讲，REST风格的Web服务，是通过一个简洁清晰的URI来提供资源链接，客户端通过对URI发送HTTP请求获得这些资源，而获取和处理资源的过程让客户端应用的状态发生改变（不像那些远程过程调用那么直接地发生改变）。一般常用的对资源进行CRUD（Create, Read, Update 和 Delete）的四种HTTP方法分别是POST, GET, PUT, DELETE。一般的Web浏览器基本只会用到GET和POST两种方法，但是根据<a title="Hypertext Transfer Protocol -- HTTP/1.1" href="http://www.ietf.org/rfc/rfc2616.txt" target="_blank">RFC 2616</a>，HTTP请求方法除了前面提到的四种还有OPTIONS, HEAD, TRACE, CONNECT，一共8种。</p>
+
+<p>REST源于Roy Fielding在2000年的<a title="Architectural Styles and the Design of Network-based Software Architectures" href="http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm" target="_blank">博士论文</a>，而关于RESTful Web服务最著名的书便是本文题图的《<a title="Google 图书上的该书链接" href="http://books.google.com/books?id=XUaErakHsoAC&amp;dq=RESTful+Web+Services&amp;hl=zh-CN" target="_blank">RESTful Web Services</a>》。顺便提一句，我只是说说而已，这两个东西我都没看过，估计看了也看不懂。
+<h2>RESTful Web Services测试工具推荐</h2>
+不了解精深的理论没关系，我们只要会使用就行了。
+<h3>命令行控的最爱：cURL</h3>
+cURL是一个很强大的支持各种协议的文件传输工具，用它来进行RESTful Web Services的测试简直是小菜一碟。这个工具基本上类Unix操作系统（各种Linux、Mac OS X）都自带了，而Windows用户就得去额外<a href="http://curl.haxx.se/download.html" target="_blank">下载</a>了。</p>
+
+<p>cURL的命令参数非常多，一般用于RESTful Web Services测试要用到下面四种参数：
+<ul>
+	<li>-d/--data &lt;data&gt;：POST数据内容</li>
+	<li>-X/--request &lt;command&gt;：指定请求的方法（使用-d时就自动设为POST了）</li>
+	<li>-H/--header &lt;line&gt;：设定header信息</li>
+	<li>-I/--head：只显示返回的HTTP头信息</li>
+</ul>
+一个最简单的例子，资源的获取，不需要强行指定GET方法，直接在curl后面跟上URL即可：</p>
+
+<p>[code light="true"]<br />
+Clippit@Clippit-PC ~<br />
+$ curl http://dayanjia.com/api/user/101250001/<br />
+{&quot;id&quot;:&quot;student1&quot;,&quot;name&quot;:&quot;\u5b66\u751f\u4e00&quot;,&quot;num&quot;:&quot;101250001&quot;,<br />
+&quot;grade&quot;:&quot;20101&quot;,&quot;courses&quot;:[{&quot;id&quot;:1,&quot;name&quot;:&quot;\u8bfe\u7a0b\u4e00&quot;,<br />
+&quot;active&quot;:false,&quot;identity&quot;:0,&quot;instructors&quot;:[{&quot;id&quot;:&quot;teacher1&quot;,&quot;na<br />
+me&quot;:&quot;\u8001\u5e08\u4e00&quot;}]},{&quot;id&quot;:2,&quot;name&quot;:&quot;\u8bfe\u7a0b\u4e8c&quot;<br />
+,&quot;active&quot;:true,&quot;identity&quot;:0,&quot;instructors&quot;:[{&quot;id&quot;:&quot;teacher2&quot;,&quot;na<br />
+me&quot;:&quot;\u8001\u5e08\u4e8c&quot;}]},{&quot;id&quot;:3,&quot;name&quot;:&quot;\u8bfe\u7a0b\u4e09&quot;<br />
+,&quot;active&quot;:true,&quot;identity&quot;:0,&quot;instructors&quot;:[{&quot;id&quot;:&quot;teacher3&quot;,&quot;na<br />
+me&quot;:&quot;\u8001\u5e08\u4e09&quot;}]}]}<br />
+[/code]</p>
+
+<p>再看删除远程的一条记录，并返回HTTP头检查操作是否成功：</p>
+
+<p>[code light="true"]<br />
+Clippit@Clippit-PC ~<br />
+$ curl -I -X DELETE http://dayanjia.com/api/course/1/<br />
+HTTP/1.1 200 OK<br />
+Date: Thu, 12 Aug 2010 16:50:46 GMT<br />
+Server: LiteSpeed<br />
+Connection: close<br />
+X-Powered-By: PHP/5.2.14<br />
+Content-Type: text/html<br />
+Content-Length: 0<br />
+[/code]</p>
+
+<p>需要指出的是，如果使用-d或者其他某些参数就不能直接看到返回的HTTP头了，即不能将-d和-I同时使用。解决的办法是采用<code>-D/--dump-header</code>参数并指定一个文件名，将header的数据保存下来查看。
+<h3>浏览器控的最爱：各种插件</h3>
+既然普通的浏览器不支持除了GET和POST以外的操作，查看和发送HTTP header都很苦难，那就让插件来扩展它的功能吧！让人们不离开浏览器就能进行各种测试，也是一种非常方便的选择。如果你喜欢下面介绍的插件，不妨到相应的页面上给它们评星以支持作者的劳动。</p>
+
+<p>Chrome下有一个<a title="点击去下载页" href="https://chrome.google.com/extensions/detail/fhjcajmcbmldlhcimfajhfbgofnpcjmb">Simple REST Client</a>插件，提供了一个简单的表单进行各种HTTP操作，并可以看到返回的信息。</p>
+
+<p><a rel="attachment wp-att-781" href="http://dayanjia.com/2010/08/3-ways-to-test-restful-web-services.html/simple-rest-client"><img class="alignnone size-large wp-image-781" title="Simple REST Client" src="http://dayanjia.com/wp-content/uploads/2010/08/Simple-REST-Client-560x491.png" alt="" width="560" height="491" /></a></p>
+
+<p>Chrome下的插件显得有些寒碜，那么同样深受开发者喜爱的Firefox也有一款名为<a title="点击进入下载页" href="https://addons.mozilla.org/zh-CN/firefox/addon/9780/" target="_blank">RESTClient</a>的插件，这款插件由国人开发，功能上支持Basic和OAuth的登录header发送，并且对于返回的XML数据还可以高亮显示。</p>
+
+<p><a rel="attachment wp-att-782" href="http://dayanjia.com/2010/08/3-ways-to-test-restful-web-services.html/restclient"><img class="alignnone size-large wp-image-782" title="RESTClient" src="http://dayanjia.com/wp-content/uploads/2010/08/RESTClient-560x420.png" alt="" width="560" height="420" /></a>
+<h3>咖啡控的最爱：RESTClient</h3>
+这里的咖啡是什么，你懂的。名字同样很朴素，这是一个用Java写的测试小工具，<a title="Java application to test RESTful webservices." href="http://code.google.com/p/rest-client/" target="_blank">项目主页</a>上提到它有命令行和GUI两种版本。为了方便操作我们选择GUI版本来看看。既然是一款软件，显然就比刚才介绍的浏览器插件功能更加强大。它支持应答正文的JSON和XML缩排和高亮，还可以一键搭建一个RESTful服务端，另外还提供了单元测试的功能。<strong>介绍的三种工具中，我最喜欢的还是这款了，尤其是它的缩排高亮功能非常实用，方便查看。</strong></p>
+
+<p><a rel="attachment wp-att-783" href="http://dayanjia.com/2010/08/3-ways-to-test-restful-web-services.html/restclient-java"><img class="alignnone size-large wp-image-783" title="RESTClient Java" src="http://dayanjia.com/wp-content/uploads/2010/08/RESTClient-Java-491x600.png" alt="" width="491" height="600" /></a></p>

@@ -1,0 +1,82 @@
+---
+layout: post
+title: 谁偷走了我的流量？
+categories:
+- 雕虫小技
+tags:
+- wordpress
+- 故障处理
+published: true
+comments: true
+---
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/03/2010-3-18-19-08-07.png"><img class="alignright size-full wp-image-537" title="红色的带宽" src="http://dayanjia.com/wp-content/uploads/2010/03/2010-3-18-19-08-07.png" alt="" width="229" height="182" /></a>今天上午，我突然收到一封邮件：
+<blockquote>The domain dayanjia.com (dayanjia) has reached 80% of its bandwidth limit (4810.18/6000.00 Megs).</blockquote>
+我顿时一惊，我在<a href="http://www.gegehost.com/" target="_blank">胡戈戈</a>那里买的主机一个月流量6GB，按理说几乎用不完的，但是今天才3月18日，怎么都已经消耗了80%了啊？！今晚登陆cPanel一看，居然已经用掉了将近5000MB了。这不禁让我大吃一惊，该不会是我的博客访问量暴增吧？嘿嘿~~不过我对这种小概率时间发生并不抱多少希望。还好，主机管理页面提供了Webalizer和Awstats两款统计工具，能让我清楚地看到这些流量究竟去了何处。经过一番排查，幕后凶手终于露出水面。最终令人惊讶的结论是，一款我曾经安装过但后来卸载了的Wordpress插件Global Translator和百度搜索爬虫联手作案吃掉了这些流量！</p>
+
+<p><!--more--></p>
+
+<p><h2>疯狂的Baidu Spider</h2>
+根据Webalizer的统计数据，3月份本博客流量的前四名来源User agent均为搜索引擎爬虫（囧rz），但是这其中最嚣张的就算百度的Spider了，竟然有223808次点击，和第二名的Google Bot完全不在一个数量级上。</p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/03/2010-3-18-19-02-57.png"><img class="alignnone size-full wp-image-538" title="疯狂的Baidu Spider" src="http://dayanjia.com/wp-content/uploads/2010/03/2010-3-18-19-02-57.png" alt="" width="565" height="444" /></a>
+<h2>万恶的Global Translator插件</h2>
+在cPanel上查看最近访问者的浏览日志，可以发现大多数都是来自百度爬虫。而这些爬虫访问的页面全都是dayanjia.com/fr、dayanjia.com/ko这样带有语言标示的URL，这不禁让我想到了曾经安装过但是后来删掉的一款WordPress插件——Global Translator。</p>
+
+<p><a href="http://dayanjia.com/wp-content/uploads/2010/03/2010-3-18-19-33-31.png"><img class="alignnone size-full wp-image-539" title="BaiduSpider最后访问日志" src="http://dayanjia.com/wp-content/uploads/2010/03/2010-3-18-19-33-31.png" alt="" width="531" height="443" /></a></p>
+
+<p>Global Translator是一款Wordpress上非常受欢迎的翻译类插件，它与其他同类插件相比最大的特色就是能够在后台生成调用网页翻译工具（例如Google翻译）翻译后页面的缓存，此外还支持与另一款Wordpress插件Google XML Sitemap联动，将多语言的页面加入Sitemap中。诚然，这个插件对于博客的推广是很有好处的，可以吸引更多国外的人来访问你的博客（尽管Google Translation的翻译时分蹩脚）。但是，那无数的缓存文件肯定会让人抓狂！上个月我将网站迁移到新买的主机上时，就遇到了这个问题，数不胜数的缓存文件用FTP下载回来再上传回去简直是一种折磨。于是我干脆放弃了那些缓存文件，迁移主机时把那个插件也删掉了。但是没想到，请神容易送神难，删掉后的Global Translator“阴魂不散”，直接影响了搜索引擎的抓取工作，更令百度的爬虫陷入超级赛亚人的疯狂访问状态。</p>
+
+<p>凡是我曾经在Global Translator中打开了翻译功能的语言，在插件删掉后，相应的URL依然可以正常命中（见上图），不过有些返回值是301（永久重定向），而有些是200（成功）。从下图的对比中我们可以清楚地看到插件卸载后的遗留问题：</p>
+
+<p>[caption id="attachment_540" align="alignnone" width="560" caption="URL中含有残留的语言代码，直接显示首页内容。"]<a href="http://dayanjia.com/wp-content/uploads/2010/03/GT.png"><img class="size-large wp-image-540" title="Global Translator插件残留" src="http://dayanjia.com/wp-content/uploads/2010/03/GT-560x438.png" alt="" width="560" height="438" /></a>[/caption]</p>
+
+<p>[caption id="attachment_541" align="alignnone" width="560" caption="而输入其他字符则会跳转到404页面"]<a href="http://dayanjia.com/wp-content/uploads/2010/03/GT2.png"><img class="size-large wp-image-541" title="Global Translator插件残留" src="http://dayanjia.com/wp-content/uploads/2010/03/GT2-560x438.png" alt="" width="560" height="438" /></a>[/caption]
+<h2>症结所在</h2>
+<strong>看到这里想必你也猜到问题根源了，就是因为插件卸载后的残留导致了无数缓存页面都重定向到首页了，致使不学好的百度爬虫拼命地抓取首页，而首页一般内容较多，自然占用带宽大，于是不到20天，4GB多的带宽流量就被百度“独享”了。</strong>
+<h2>解决办法</h2>
+分析了原因，自然要找到相应的办法，不然这个月最后几天我的博客就无法访问到了，而且今后百度的爬虫会不会更加疯狂还是未知数。
+<h3>修改robots.txt</h3>
+虽然我们都知道百度的Spider貌似不太喜欢去看robots.txt，但这毕竟是堵住搜索引擎访问最方便最理想化的方法。由于我也记不清楚当初设定了多少种语言翻译了，所以尽量多写些吧！打开网站根目录下的的robots.txt，然后在<code>User-agent: *</code>的后面加上：</p>
+
+<p>[code]<br />
+Disallow: /ar/<br />
+Disallow: /bg/<br />
+Disallow: /cs/<br />
+Disallow: /da/<br />
+Disallow: /de/<br />
+Disallow: /el/<br />
+Disallow: /en/<br />
+Disallow: /es/<br />
+Disallow: /fi/<br />
+Disallow: /fr/<br />
+Disallow: /hr/<br />
+Disallow: /hu/<br />
+Disallow: /it/<br />
+Disallow: /iw/<br />
+Disallow: /ja/<br />
+Disallow: /ko/<br />
+Disallow: /nl/<br />
+Disallow: /no/<br />
+Disallow: /pl/<br />
+Disallow: /pt/<br />
+Disallow: /ro/<br />
+Disallow: /ru/<br />
+Disallow: /sk/<br />
+Disallow: /sr/<br />
+Disallow: /sv/<br />
+Disallow: /th/<br />
+Disallow: /tr/<br />
+Disallow: /zh-TW/<br />
+[/code]
+<h3>修改.htaccess</h3>
+刚才说到百度可能对robots.txt并不友好，因此我们也无法立即判断上面的方法是否真正有效。当然你可以在接下来的几天中观察流量日志的变化以确认它的有效性，但是我们等不及了，因为流量真的就快用完了。我们可以修改.htaccess文件来让用户（包括搜索引擎）访问这些URL时跳转到403（禁止访问）页面，以节省网站流量，当然者比较暴力了，呵呵……打开网站根目录下的.htaccess。然后在<code>RewriteEngine On</code>的下面加上以下命令（你可以根据需要自己修改相应的匹配规则）：</p>
+
+<p>[code]<br />
+RewriteCond %{HTTP_HOST} ^dayanjia.com$ [NC]<br />
+RewriteRule ^(ar|bg|cs|da|de|el|en|es|fi|fr|hr|hu|it|iw|ja|ko|tr|zh-TW) - [F]<br />
+[/code]</p>
+
+<p>这样做的效果可谓立竿见影：
+<a href="http://dayanjia.com/wp-content/uploads/2010/03/403.png"><img class="alignnone size-large wp-image-543" title="403" src="http://dayanjia.com/wp-content/uploads/2010/03/403-560x225.png" alt="" width="560" height="225" /></a>
+<h2>结论</h2>
+我在网上搜索后，发现同样有朋友遇到了类似的问题，比如<a title="纠结：博客流量异常，寻求解决之道" href="http://louishan.com/articles/blog-traffic-overproof.html" target="_blank">这里</a>和<a title="慎用Translator Global" href="http://geek520.com/wordpress/use-carefully-translator-global.html" target="_blank">那里</a>。尽管Global Translator这款插件使用起来的确很方便，但是它产生的缓存问题不容忽视，请大家慎用这款插件。如果想要在博客上挂翻译链接的话，可以使用<a title="让您的网站立刻以其他语言显示" href="http://translate.google.com/translate_tools?hl=zh-CN&amp;layout=1&amp;eotf=1" target="_blank">Google提供的代码</a>。</p>

@@ -1,0 +1,37 @@
+---
+layout: post
+title: 从文件同步服务说开去
+categories:
+- 雕虫小技
+- 一家之言
+tags:
+- Internet
+- 软件
+published: true
+comments: true
+---
+<p>如果你在不同的电脑上进行工作，需要随时同步一些重要文件，你会怎么办？如果你面对一台陌生的电脑，想用自己最熟悉的一套方法和工具处理事务，你该怎么办？如果你的电脑上有一些好东西想和亲朋好友分享，你又会怎么办？</p>
+
+<p>或许最传统的方法是使用U盘来传递这些文件，以便随时使用。但是人难免有犯糊涂忘了U盘的时候，再说拿个U盘到处乱插也不是一件好事。于是我们自然而然想到了网络这个无所不在的载体。一般的工作文档往往文件不大，使用网络传输和U盘所花费的时间相差无几。于是所谓的“网络U盘”的概念自从Internet宽带普及以来就一直延续到现在，不过随着云计算的发展，“网络U盘”也正经历着翻天覆地的变化。</p>
+
+<p><!--more-->
+<h2>早期传统网盘</h2>
+<a rel="attachment wp-att-711" href="http://dayanjia.com/2010/06/a-rambling-talk-about-file-sync-and-cloud-storage.html/freefileredtoreall"><img class="alignleft size-medium wp-image-711" title="web file sharing services" src="http://dayanjia.com/wp-content/uploads/2010/06/freefileredtoreall-300x151.jpg" alt="" width="300" height="151" /></a>早期传统网盘大多提供了两种存储空间，一种容量很小，但是可以永久保存自己的私人文件，另一种容量较大，可以和他人分享文件，但是会定期删除。<span style="color: #3366ff;">事实上，前面一种服务已经几乎没有人使用了。如今这种网页上的“网盘”服务大多数成为了各类资源的集散地。</span>人们利用这些平台来发布资源，让这些网站承担下载带来的巨大流量。同时，难以生存的网盘网站不停地在网页上堆砌广告，推出付费获取所谓“更快速度”的下载服务（基本上国外的都有），甚至必须采取专用的软件才能下载文件（国内服务用的较多）。同时，人们通过这些服务分享盗版资源也让提供商头疼，国外老牌的<a href="http://www.rapidshare.net/" target="_blank">Rapidshare</a>便因盗版压力不得不<a title="Rapidshare出于顾虑取消积分制度" href="http://internet.solidot.org/article.pl?sid=10/06/24/0926214&amp;amp;from=rss" target="_blank">取消了上传积分制度</a>。</p>
+
+<p><span style="color: #3366ff;">虽然它们叫做“网络U盘”，但是和现实中的U盘差距实在是太明显了——没有人用它来同步自己的文件。</span>造成这种现象的一大原因便是基于B/S的网盘需要手动进行同步操作，过于繁琐。
+<h2>和系统集成才是王道</h2>
+<a rel="attachment wp-att-715" href="http://dayanjia.com/2010/06/a-rambling-talk-about-file-sync-and-cloud-storage.html/tour_sync"><img class="alignright size-medium wp-image-715" title="tour_sync" src="http://dayanjia.com/wp-content/uploads/2010/06/tour_sync-300x224.png" alt="" width="300" height="224" /></a>“网络U盘”和文件同步的需求渐行渐远，专为用户同步文件设计的各类软件层出不穷，像SugarSync和Windows Live Sync都是比较著名的产品。用户通过在多台电脑上安装这些软件，便可以获得同步文件的功能。而SugarSync还将文件存储在它们的服务器上，以便没有安装软件时也可以访问到自己的文件。指定了需要同步的文件夹后，通过的过程完全是无需干预的，文件不知不觉就上传到了服务器上。</p>
+
+<p><span style="color: #3366ff;">随着移动互联网的普及，越来越多的软件开始支持移动平台，用户可以在iPhone、BlackBerry、Android等移动终端上随时访问自己的文件。从这一点来看，文件同步早已超越了所谓“网络U盘”的范畴，成为了一项随时随地的便捷服务。</span>用户可能一开始会感到疑惑：“我真的需要它吗？”但是当人们真正开始使用后，他们会觉得：“这真是太棒了，我离不开它！”
+<h2>云存储时代来临</h2>
+2008年，两个MIT的毕业生折腾出了一款新的文件同步服务，他们给它取了一个形象的名字，叫做DropBox。用户把他们的东西丢到这个Box里面，可以在其他地方轻松地找到它。DropBox使用了Amazon的S3云存储服务，并吸收了软件工程中版本控制和增量备份的理念。<span style="color: #3366ff;">把文件的存储过程交给云计算，使得DropBox无需考虑各种涉及到文件存取的复杂技术问题，专心把重点放在服务质量上。</span>DropBox依靠着口碑营销获取了非常大的关注，如今已经是文件同步服务中的佼佼者，用户超过400万。
+<h2>你都同步些什么？安全性呢？</h2>
+<a rel="attachment wp-att-716" href="http://dayanjia.com/2010/06/a-rambling-talk-about-file-sync-and-cloud-storage.html/attachment/12278600851227860467"><img class="alignleft size-medium wp-image-716" title="Dropbox" src="http://dayanjia.com/wp-content/uploads/2010/06/12278600851227860467-299x300.png" alt="" width="299" height="300" /></a>DropBox和系统高度集成，你几乎无需去理会它的存在，只需要知道“有一个神奇的文件夹”就可以了。你可以将完成了一半的工作文件放进去，你可以将一些自己用的顺手的绿色小软件放进去，你甚至还可以把电脑游戏存档同步进去以便在不同的电脑上持续地进行冒险……总之，一切你想要放在云里的东西你都可以放进去。</p>
+
+<p>云计算有一个很棘手的问题便是安全性。诚然用户会担心自己的东西会不会被别人看到，会不会莫名其妙地丢失。<span style="color: #3366ff;">对于有这类特殊敏感需求的人，他们大可以放弃这些公开的云存储服务。我们可以搭建一台SVN服务器，使用SVN来同步自己的文件。</span>事实上，你会发现DropBox有很多地方借鉴了SVN，和Windows下的TortoiseSVN软件。
+<h2>SugarSync vs. DropBox</h2>
+上文中多处提到了两款软件，便是SugarSync 和 DropBox。SugarSync功能强大，定制性非常强，它的官网上有其<a title="See How SugarSync Stacks up to the Competition" href="https://www.sugarsync.com/sync_comparison.html" target="_blank">和同类软件的比较</a>。而DropBox是属于“简约而不简单”类型的，有点苹果的风格，简洁而强大。</p>
+
+<p>在DropBox获得了<strong>G</strong><span style="color: #ccc;">ame</span> <strong>F</strong><span style="color: #ccc;">or</span> <strong>W</strong><span style="color: #ccc;">indows</span>金牌认证以后，SugarSync很时宜地推出了官方中文版，以迎接被迫转换到其他平台的用户。同DropBox一样，SugarSync有2GB的免费账户和容量更大的收费账户。<strong><span style="color: #003300;">不过各位读者的福利来了，</span></strong><a title="点击注册SugarSync并获得250MB额外空间" href="https://www.sugarsync.com/referral?rf=oh842ar4xbic" target="_blank">点击这里注册SugarSync的话</a><strong><span style="color: #003300;">，你会获得额外250MB的存储空间。</span></strong>SugarSync最方便的地方莫过于可以选择多个文件夹进行同步了（DropBox自0.8 beta版也开始支持）。PS: 最近写了一篇软文，让我心存愧疚，这篇可不是什么软文哈……</p>
+
+<p><span style="text-decoration: underline;">再PS：最近Google Reader貌似出了点问题，乱抓以前的文章，给大家带来不便还请谅解哈！</span></p>

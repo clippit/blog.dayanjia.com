@@ -1,0 +1,29 @@
+---
+layout: post
+title: 博客遭遇灾难……灾后重建工作有序推进中……
+categories:
+- 侃侃而谈
+tags:
+- wordpress
+- 公告
+published: true
+comments: true
+---
+<p>就在国庆节前一天，9月30日，我的邮箱中突然收到了一封来自<span><a href="http://www.byethost.com" target="_blank">byethost.com</a>的邮件，说要停止我的免费空间服务。这对于刚刚新建一个月的鸟巢来说，简直就是一场灾难啊！刚开始我的这个网站就是使用的他们的免费主机服务，虽然国内访问速度不怎么样，但是功能比较全面，提供的容量和带宽也很大，但是在使用了一个月之后最终还是遇到了一件意想不到的事情。他们的邮件中是这样写的：</span>
+<blockquote>This email is inform you that your free hosting account b32_4001023 has been utilizing over 100 concurrent webserver process for a prolonged period of time.</blockquote></p>
+
+<p>This high usage will be due to your websites success and we congratulate you on your effort and work building a successful, busy website!</p>
+
+<p>We would like to ask you to consider upgrading your free website to a premium hosting account where you will receive a free TLD domain, hosting on powerful 8CPU 'paid hosting servers' with very large disk space and traffic limits, combined with the powerful cPanel 11 hosting control panel.
+说是我的空间由于并发连接数超过了100导致被K掉了！而继续使用的办法就是购买他们的付费主机——他们的付费主机最便宜的也要$2.99/Month。事实上，根据我的Google统计显示，过去的一个月中，鸟巢的访问量仅有300多，怎么可能并发超过100呢？所以我得出结论，就是他们缺钱了等不及了……没办法我只好放弃了byethost的主机。但是不幸的是，我自从到校后就没有再去备份过网站，最近的一次备份在9月1日，后面新增的文章就找不到了。就在我万念俱灰时突然想到了伟大的搜索引擎，赶快求助于Google和百度的snapshot，果然找到了后来新写的文章！那么灾难过后，我们就开始灾后重建工作吧！</p>
+
+<p><!--more--></p>
+
+<p>之前听说<a href="http://www.000webhost.com" target="_blank">000webhost</a>的免费主机很不错的，但是他基本上封掉了中国IP的注册……没办法求助于在美国求学的某同学，成功地注册了一个帐号，但是看看网上有人说要每次登陆都挂代理，如果经常用中国IP登录，也有可能被K掉的……这条件也太严苛了吧！正当我郁闷时，突然看到<a href="http://wordpress.org.cn/" target="_blank">WordPress中文论坛</a>上有位<a href="http://hengtian.org/" target="_blank">热心人</a>说在中秋之夜提供一些免费的国外wordpress主机<br />
+——哈哈，这不是雪中送炭吗！于是我立刻就申请了，所以大家现在看到的博客就是建立在这个主机上的。虽然容量和带宽有限，不过对于新建网站应该是足够的。</p>
+
+<p>于是我就开始了备份恢复之旅，但是这条路依旧充满了坎坷……因为我悲剧地发现9月1日备份的文件是有问题的，上传上去以后网页拼命地出现PHP警告，导致根本无法使用！说来奇怪，所有源文件中，一个换行符居然变成了两个换行符，还有些文件不知为什么消失了……可以说这个备份基本上等于没有备份啊！好吧，如今只能另起炉灶了，于是又开始重装wordpress程序，重装插件，重装主题，修改主题文件，导入文章……</p>
+
+<p>整个国庆假期基本上就在进行灾后重建工作了，不过到目前已经取得了阶段性成果。本站的大部分内容已经恢复到灾前水平，只是曾经的文章阅读计数没有了，不过Feed订阅数又开始稳步增长～～</p>
+
+<p><strong>另外，这次重新修改主题文件还解决了一个小问题，那就是在没有安装微软雅黑字体的系统下网页头部和sidebar部分字体过小的问题。之前修改css的时候一直没有发现什么地方定义这些font-size的，这次终于给我发现了哈哈～～原来他们不是用px这个单位的，而使用em这个单位。em实际上是一个对于浏览器默认字号的倍数值。大多数浏览器默认字号是16px，原先这些地方的字号定义为0.7em，也就是11.2px，在没有使用微软雅黑和ClearType的机器上，那种宋体字是非常难以识别的。现在把它改成0.75em，16*0.75=12px，这样就是9pt的字了，显示效果一下子就改善了～哈哈</strong></p>

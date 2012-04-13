@@ -1,0 +1,196 @@
+---
+layout: post
+title: Web开发中初学者容易混淆的9个命名约定
+categories:
+- 雕虫小技
+tags:
+- HTML
+- Javascript
+- php
+- Web开发
+- 心得
+- 翻译
+published: true
+comments: true
+---
+<p>当人们一开始接触各种Web开发语言时，总会发现彻底搞懂不同语言的命名约定是一件很要命的事情。而且当开发者在争论什么才是最佳实践时，事情会变得更加让人困惑。为了让初学者更容易地在不同语言中过渡，这篇文章列出了一些常见的约定。</p>
+
+<p><!--more-->
+<h2>1. 类属性名前加下划线</h2>
+如果你看到一个变量或者方法是以_开头的，其实这并不代表其幕后有什么猫腻。这仅仅是为了提醒开发者这个变量/属性/方法是私有的（<code>private</code>）或是受保护的（<code>protected</code>），它们不能从类的外部访问到。
+<h4>PHP方式</h4>
+[php]class MyClass {<br />
+   // 这个实例变量在类外部无法访问<br />
+   private $_someVariable;</p>
+
+<p>   // 这个方法仅在类内部或者其它继承它的类中可用<br />
+   protected function __behindTheScenesMethod() {}<br />
+}[/php]
+<h4>JavaScript方式</h4>
+[javascript]var Female = (function() {<br />
+   var _trueAge = 50,<br />
+        _trueWeight = 140;</p>
+
+<p>   return {<br />
+      age : _trueAge - 15,<br />
+      weight : _trueWeight - 30<br />
+   };<br />
+})();</p>
+
+<p>Female.age; // 35<br />
+Female.weight; // 110<br />
+Female._trueAge; // 未定义（因为它是私有的，嘿嘿）[/javascript]</p>
+
+<p>这里的Female并不是一个方法，但它返回一个对象（译注：这个例子很幽默）。这样，下划线前缀就可以提醒我们哪些是私有的。
+<h2>2. 大写常量名</h2>
+常量（<code>Constant</code>）代表了一个不会改变的静态值。例如，假设一个项目中需要一个税率值.0825，它便是一个常量。然而，并非所有语言都支持这种类型。因此，最好的做法是全部使用大写字母来提醒自己这是个常量。在JavaScript中，语言内建的对象都是采用这种约定，例如<code>MATH.PI</code>。
+<h4>JavaScript方式</h4>
+[javascript]var TAXRATE = .0825;[/javascript]
+<h4>PHP方式</h4>
+[php]define('TAXRATE', .0825);[/php]
+<h2>3. 单字母前缀</h2>
+你一定在某些场合见过变量名是以一个单独字母开头的，例如“s”或者“i”。</p>
+
+<p>[php]$sName = 'Captain Jack Sparrow'; //译注：Jack Sparrow《加勒比海盗》中的船长角色[/php]</p>
+
+<p>这被称作“匈牙利命名法”，事实上在近几年并不流行。不过在许多公司内这仍是一条约定。
+<blockquote>匈牙利命名法能够提醒开发者它正在使用的变量是什么类型的：<code>string</code>，<code>integer</code>等。</blockquote>
+尤其在JavaScript中，这种方法是不可取的，因为JavaScript是弱类型的语言。弱类型语言不需要在使用变量前声明它的类型。如果我们给一个字符串以“s”开头命名，但是后来我们把一个整数赋值给它，这种命名法还有什么意义呢？事实上，这种形式的命名法会妨碍我们的工作，而不是对工作有益。</p>
+
+<p>[javascript]var sName = &quot;Lieutenant Commander Geordi La Forge&quot;; // 译注：Geordi La Forge 少校是《星际迷航：下一代》中的角色，天生眼盲，佩戴高科技护目镜<br />
+typeof(sName); // string<br />
+....<br />
+sName = undefined;<br />
+typeof(sName) // undefined[/javascript]
+<h3>美元符号</h3>
+致jQuery使用者：当你使用工厂函数生成对象并且心里暗喜没有受到匈牙利命名法的束缚时，你是否会在变量名前加一个美元符号？如果是这样，那么这也是匈牙利命名法的一种形式。这个符号的唯一目的是提醒你这个变量的类型。</p>
+
+<p>[javascript]// 这个美元符号提醒我可它可以使用jQuery的各种方法<br />
+var $container = $('#container');<br />
+[/javascript]
+<h4>应当这么使用吗？</h4>
+这完全取决于你自己。事实上许多jQuery团队的成员也使用这种美元符号前缀。使用它的最终目的是能够适应你的工作。以我而言，几年前我就不使用这种美元符号了——这仅仅是因为我个人觉得这没有必要。你可以自己决定如何对待它。
+<h2>4. 首字母大写</h2>
+下面这个首字母大写的变量名看上去如何？</p>
+
+<p>[php]$response = $SomeClass-&gt;doSomething();[/php]</p>
+
+<p>在上面的代码中，$SomeClass写成了单词首字母大写的形式是因为它是一个类的对象而不是普通的变量名。通常这是绝大多数开发者使用的方法。当我们一年后再回过头来看这些代码时，这个简单的形式就能准确地告诉我们这是一个对象，可以调用其方法。</p>
+
+<p>[php]// 注意类名中大写的M<br />
+class MyClass {<br />
+   function __construct() {}<br />
+}[/php]
+<h3>JavaScript方式</h3>
+在JavaScript中，没有真正的类，但是有构造（<code>constructor</code>）函数。</p>
+
+<p>[javascript]var Jeff = new Person();[/javascript]</p>
+
+<p>我们将构造器（<code>Person</code>）的首字母大写的原因是我们有时候很容易忘记new关键词。在这种情况下，JavaScript往往不会抛出任何警告，但是这个小错误却非常难调试到。首字母大写能够给开发者在debug时一个有效的提示。Douglas Crockford是这个约定最大的提倡者。（译注：Douglas Crockford是Javascript社区的大神级人物，是<a href="http://www.json.org/json-zh.html">JSON</a>、<a href="http://www.jslint.com/">JSLint</a>、<a href="http://www.crockford.com/javascript/jsmin.html">JSMin</a>和<a href="http://www.adsafe.org/">ADSafe</a>之父，是《<a title="JavaScript: the good parts" href="http://books.google.com/books?id=PXa2bby0oQ0C&amp;printsec=frontcover&amp;hl=zh-CN&amp;source=gbs_ge_summary_r&amp;cad=0#v=onepage&amp;q&amp;f=false" target="_blank">JavaScript：The Good Parts</a>》的作者。）</p>
+
+<p>另一种可选方案是，如果你生怕自己的健忘，你可以在执行前首先确保构造器存在并且正确。</p>
+
+<p>[javascript]function Person(name) {<br />
+  // 如果遗漏了new关键词，将会执行下面的构造函数并返回一个新的实例<br />
+  if ( this.constructor !== Person ) {<br />
+    return new Person(name);<br />
+  }<br />
+ this.name = name;<br />
+}</p>
+
+<p>// 故意不用“new”关键词<br />
+var Joey = Person('Joey');<br />
+Joey.name; // Joey<br />
+[/javascript]
+<h2>5. 驼峰式和下划线式</h2>
+为什么有些变量使用驼峰式大小写模式，而有些是使用下划线分割单词呢？哪一种是正确的方法？答案是：没有绝对正确的用法。这完全去取决于你的语言，或者你公司的代码约定。这两种都是非常好的方式。</p>
+
+<p>[javascript]// camelCase<br />
+var preacherOfSockChanging = 'Lieutenant Dan'; // 译注：Dan中尉，电影《阿甘正传》中的人物</p>
+
+<p>// under_score<br />
+var preacher_of_sock_changing = 'Lieutenant Dan';[/javascript]</p>
+
+<p>正如大家所说，跟随你使用的语言的通常约定是一项最佳实践。例如，大量JavaScript开发者使用驼峰式的语法，而像PHP则更倾向于使用下划线分割。需要重申的是，这不是板上钉钉的规矩。Zend框架就是驼峰式大小写的推动者。
+<blockquote>比你使用什么更重要的是确保你一直去使用它！</blockquote>
+<h2>6. 目录结构</h2>
+通常在团队中工作时，你必须和你的协同开发者一起接受一个合适的目录结构。最基本的显然是不要把所有的样式表、脚本都放到项目的根目录下，这显得非常无组织无纪律。许多开发者愿意将它们的图像、脚本和样式表放到一个<code>Assets</code>目录下。</p>
+
+<p>[code]/ Project Root<br />
+  /Assets<br />
+    / js<br />
+      / min<br />
+        script_min.js<br />
+      script.js<br />
+    / css<br />
+      / min<br />
+        style_min.css<br />
+      style.css<br />
+    / img<br />
+      img1.jpg<br />
+  index.html<br />
+  otherFile.html[/code]</p>
+
+<p>此外，记住一项创建<code>min</code>目录的约定规则。这里面动态地存放着压缩后的脚本和样式表文件。
+<h2>7. 语义</h2>
+当使用标记语言时，需要明白你选择的<code>id</code>和<code>class</code>需要能够描述你的内容，而不是仅仅代表形式。例如：
+<h4>最悲剧的</h4>
+[html]&lt;div id=&quot;middle-left-and-then-a-little-lower&quot;&gt; Justin Bieber is my homeboy section. &lt;/div&gt;[/html]
+<h4>稍好一些</h4>
+[html]&lt;div class=&quot;section&quot;&gt; Justin Bieber is my homeboy section. &lt;/div&gt;[/html]
+<h4>最佳做法</h4>
+[html]&lt;section&gt; Justin Bieber is my homeboy section. &lt;/section&gt;  [/html]</p>
+
+<p>怎么样？如果在六个月以后，你决定把Justin Bieber粉丝的内容放到中间偏右并稍低一些（middle-RIGHT-and-then-a-little-lower）的位置呢？这样，你的i<code>id</code>就完全失去了意义。
+<blockquote>我们正在向HTML5的世界过渡，你应当在元素中使用尽量少的标识。<code>id</code>显得很不灵活，而且很多情况下并不需要。</blockquote>
+<h2>8. 写两遍<code>Header</code>和<code>Footer</code></h2>
+当做一个居中的网站时，需要将多重背景扩展到整个窗口的宽度（通常是<code>header</code>和<code>footer</code>），是非常令人讨厌的。你通常需要包裹你的内容，这样外层元素扩展后，内层元素还能继续保持居中。</p>
+
+<p>这是一个一般性的问题，在创建必需的标记语言内容时接受这样的约定规则是很重要的。</p>
+
+<p>[html]&lt;div id=&quot;footer-wrap&quot;&gt;<br />
+	&lt;footer&gt;<br />
+	  My footer content goes here.<br />
+	&lt;/footer&gt;<br />
+&lt;/div&gt;[/html]</p>
+
+<p>难以决定的是，假设你在使用HTML5中的新元素，你需要决定将<code>footer</code>标签放在里面还是外面。这个还有待讨论。然而我个人觉得将<code>footer</code>放在内层更加语义化。</p>
+
+<p><code>div</code>只限下面的情况时才使用：
+<ul>
+	<li>没有更好的元素来使用了</li>
+	<li>你需要一个单纯的表示布局结构的元素</li>
+</ul>
+<h2>9. 简写</h2>
+现在就决定是否允许在你的代码中使用简写。书写精确且整洁的代码总是一场可读性和代码长度的斗争。这也正是开发团队内使用相同代码风格是首要考虑规则的原因。来看两个简单的例子：
+<h4>三目运算符合适吗？</h4>
+[javascript]var name = 'Joe';</p>
+
+<p>// regular<br />
+if ( name === 'Jeff' ) {<br />
+  alert(&quot;That's me&quot;);<br />
+} else {<br />
+  alert(&quot;Nope&quot;);<br />
+}</p>
+
+<p>// ternary<br />
+alert(name === &quot;Jeff&quot; ? &quot;That's me&quot; : &quot;Nope&quot;); // Nope[/javascript]
+<h4>使用逻辑<code>&amp;&amp;</code>来写简短的条件判断句？</h4>
+[javascript]var getTweets = true;</p>
+
+<p>// regular<br />
+if ( getTweets ) {<br />
+ alert('getting them now');<br />
+}</p>
+
+<p>// 逻辑 AND<br />
+// 除非左边是“true”否则右边不会运行<br />
+getTweets &amp;&amp; alert('Getting them now');[/javascript]</p>
+
+<p>许多开发者都对如此使用AND感到不爽，坚持认为这影响了可读性。尽管这的确是是一个有力的观点，但是连流行的框架类库例如jQuery也大量使用了这种方法。
+<h2>结论</h2>
+再次重申，你在开发时坚持使用某种方式比选择什么样的的约定来的更加重要。事实上，许多开发团队都有自己专门的代码风格指导给新开发者参考。感谢阅读！
+<blockquote>译注：关于变量命名更详细的约定规则介绍，大家可以阅读《代码大全》（第2版）的第11章。</blockquote></p>
+
+<p>原文：<a title="9 Confusing Naming Conventions for Beginners" href="http://net.tutsplus.com/articles/general/9-confusing-naming-conventions-for-beginners/" target="_blank">9 Confusing Naming Conventions for Beginners</a>
+作者：<a title="Jeffrey Way" href="http://net.tutsplus.com/author/jeffreyway/">Jeffrey Way</a></p>

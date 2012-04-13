@@ -1,0 +1,79 @@
+---
+layout: post
+title: ! '[原]AMAI添加中文TFT人工智能地图流程（附TFT人工智能地图全集中英双语版）'
+categories:
+- 雕虫小技
+tags:
+- 游戏
+published: true
+comments: true
+---
+<p><span style="LINE-HEIGHT: 150%"><p>经过三天的奋斗，终于把AMAI这个小软件摸透了！真是不容易啊~~~~</p>
+<p>AMAI是一个专门给魔兽争霸的地图添加人工智能系统的软件，不仅免费开源，而且官方网站上还特意提供了两种版本的软件供大家下载。一种是“Player Edition”玩家版，还有一种是“Developer Edition”开发版。</p>
+<p>不知为什么，在玩家版里并没有中文支持，而在开发版里却提供了简体中文的语言文件，可能是开发者的疏忽吧！<br />不管怎么样，我一定要把中文添加进去！！于是我下载了开发版</p>
+<p>还真不愧是“开发版”，居然源代码使用Perl写出来的！！没办法只得到网上又下载了一个ActivePerl这才能运行程序<br />只可惜我的英语水平仅限在学校里教的那些个单词语法，这么多英文我可看不懂！！<br />大家可以看一看，下面一幅图是界面节选，仅仅节选而已！！</p>
+<p><a href="http://amai.wc3campaigns.com/MAN/Editor1.jpg"><img style="WIDTH: 666px; HEIGHT: 450px" height="828" alt="image" src="http://amai.wc3campaigns.com/MAN/Editor1.jpg" width="1081" border="0" /></a>&nbsp;</p>
+<p>真够恐怖的吧！！没办法，我只好硬着头皮用它了。突然我发现了一个名字叫Manuals的文件夹。嘿！这个单词我认得，是“手册”的意思啊！赶快打开一看——我的妈呀！！统统是英语！！看来这年头不会英语可真的就是文盲了！没办法，我只好用WorldLingo一句一句地翻译。还不错，总算大概看懂了！看来国际著名网站的翻译水平不是吹的，个人觉得比那个什么“XX快译”要好不少！</p>
+<p><img alt="image" src="http://www.worldlingo.com/zh/images/wl_master_logo.gif" border="0" />&nbsp;</p>
+<p>可是我翻遍全文，就是没有一个地方讲是怎么把语言添加到地图里面去的！真是郁闷！！！看来只能自己研究了~~~~~~~</p>
+<p>我在开发版的文件夹里面找到一个名字叫Languages的文本文件，打开一看，语言设置不全在里面吗？！</p>
+<blockquote>
+<p>Language Name Language Report Hotkey Encoding<br />English Set language of AI to English. 69 iso-8859-1<br />Deutsch AI Sprache ist jetzt Deutsch. 68 iso-8859-1<br />Swedish AI Sprak andrat till Svenska. 83 iso-8859-1<br />French Langue de l'IA est maintenant Francais. 70 iso-8859-1<br />Spanish Lengua es Espanol. 80 iso-8859-1<br />Romanian Seteaza Limba in Romana. 82 iso-8859-1<br />Russian Language is now Russian 85 CP-1251</p></blockquote>
+<p>这样看了可能有点乱，其实这是个表格，我把它组织一下就可以了！</p>
+<blockquote>
+<table border="1">
+<tbody>
+<tr>
+<td>Language Name</td>
+<td>Language Report</td>
+<td>Hotkey</td>
+<td>Encoding</td></tr>
+<tr>
+<td>English</td>
+<td>Set language of AI to English.</td>
+<td>69</td>
+<td>iso-8859-1</td></tr>
+<tr>
+<td>Deutsch</td>
+<td>AI Sprache ist jetzt Deutsch.</td>
+<td>68</td>
+<td>iso-8859-1</td></tr>
+<tr>
+<td>Swedish</td>
+<td>AI Sprak andrat till Svenska.</td>
+<td>83</td>
+<td>iso-8859-1</td></tr>
+<tr>
+<td>French</td>
+<td>Langue de l'IA est maintenant Francais.</td>
+<td>70</td>
+<td>iso-8859-1</td></tr>
+<tr>
+<td>Spanish</td>
+<td>Lengua es Espanol.</td>
+<td>80</td>
+<td>iso-8859-1</td></tr>
+<tr>
+<td>Romanian</td>
+<td>Seteaza Limba in Romana.</td>
+<td>82</td>
+<td>iso-8859-1</td></tr>
+<tr>
+<td>Russian</td>
+<td>Language is now Russian</td>
+<td>85</td>
+<td>CP-1251</td></tr></tbody></table></blockquote>
+<p>这回清楚了吧？第一栏Language Name是语言名称，第二栏Language Report是说明，第三栏Hotkey估计是什么热键，第四栏Encoding是文字编码。这下好了，我把除了英语以外的语言全部删掉，再依葫芦画瓢添加一个Chinese……不行，Language Report可以随便填，那Hotkey和Encoding应该填什么呢？</p>
+<p>于是我来到Languages文件夹，看看Chinese文件夹下面有些什么东西。原来这些翻译都是一位来自武汉大学的名叫sheeryiro的同志翻译的！翻译的还不错啊~~~~不过有一点我不明白的是，为什么有很多句子的结尾都是一个“?”呢？本着精益求精的精神，我把所有的句子都重新看了一遍，把“?”删掉换成了正确的字符，还把剩下的一个未被翻译的文件翻译了一下（还是用的WorldLingo，不过自己又校对了一遍，毕竟机器翻译没有人工翻译好嘛！）。一切完工，我也知道了这些文件都是UTF-8的编码。看来Hotkey我就瞎填一个拉倒吧！试试看行不行再说！</p>
+<p>一切修改完毕，按照那个长篇大论的“手册”上面讲的方法，把AI文件制作完毕！</p>
+<p>下面就是把AI文件写入地图了！这个很简单啦~~~~~~只要使用AMAI.exe，选择好地图，然后点“Install AMAI”就可以了！<br />忘了说一句，千万不要把原来的地图文件覆盖掉啊！否则录像就看不成了！！</p>
+<p>好了~~~~~总算把大概内容讲了一遍，我把制作好的TFT地图打包了一下，有兴趣的朋友可以下载啊！</p>
+<p class="style14" dir="ltr" style="MARGIN-RIGHT: 0px">安装及使用方法：</p>
+<p dir="ltr" style="MARGIN-RIGHT: 0px">
+<li class="style14">请在“目标文件夹”中把路径定位到 <em>[魔兽争霸安装目录]\Maps</em> 文件夹中，然后点击“安装”按钮
+<li class="style14">游戏时请转到地图根目录中选择<em> AMAI Maps (Powered by Clippit)</em> 文件夹，然后选择相应地图即可
+<li class="style14">每张地图提供两种语言：简体中文（Chinese）和英文（English），在游戏开始时可以选择
+<li class="style14">按下ESC键可以进入AI设置
+<p></p>
+<p class="style15">下载地址：<a href="http://fs32.139.com/0/309/clippit/share/2005829102441910.exe">http://fs32.139.com/0/309/clippit/share/2005829102441910.exe</a><br />高速下载哦~~~~~感谢<a href="http://www.139.com">www.139.com</a>给我提供了一个这么好的网络硬盘哦~~~~~呵呵（不是广告）</p>
+<p class="style15">相关资源：<br />AMAI官方网站：<a href="http://amai.wc3campaigns.com/">http://amai.wc3campaigns.com/</a><br />AMAI 2.43 Player Edition NYE 下载：<a href="http://amai.wc3campaigns.com/download/AMAI_243PE_NYE.ZIP">http://amai.wc3campaigns.com/download/AMAI_243PE_NYE.ZIP</a><br />AMAI 2.43 Developer Edition NYE 下载：<a href="http://amai.wc3campaigns.com/download/AMAI_243DE_NYE.ZIP">http://amai.wc3campaigns.com/download/AMAI_243DE_NYE.ZIP</a><br />ActivePerl 5.8.7.813 下载：<a href="http://downloads.activestate.com/ActivePerl/Windows/5.8/ActivePerl-5.8.7.813-MSWin32-x86-148120.msi">http://downloads.activestate.com/ActivePerl/Windows/5.8/ActivePerl-5.8.7.813-MSWin32-x86-148120.msi</a></p></li></li></li></li></p></span></p>

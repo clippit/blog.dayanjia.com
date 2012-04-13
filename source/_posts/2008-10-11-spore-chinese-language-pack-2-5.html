@@ -1,0 +1,36 @@
+---
+layout: post
+title: 【2.5版发布】孢子简体中文语言包“大陆习惯完美版”
+categories:
+- 自娱自乐
+tags:
+- 汉化
+- 游戏
+published: true
+comments: true
+---
+<p><span style="LINE-HEIGHT: 150%"><strong><span style="color: #8b0000; font-size: medium;">2.5版修正列表：
+</span>1、改用ko-kr文件夹来安装语言包，使得可以和繁体中文包共存<br />
+2、改进引导程序编译方式，大大降低杀软误报</strong></span></p>
+
+<p><span style="color: #ff0000; font-size: large;"><strong>
+下载地址（2.5版，任选其一）：</strong></span></p>
+
+<p><span style="color: red;">RayFile：</span><a href="http://www.rayfile.com/files/716a3928-976f-11dd-96e9-0014221b798a/" target="_blank"><span style="font-size: x-small;">http://www.rayfile.com/files/716a3928-976f-11dd-96e9-0014221b798a/</span></a>
+<span style="font-size: large;"><span style="color: red;"><strong>uushare：</strong></span></span><a href="http://www.uushare.com/user/clippit/file/870647" target="_blank"><span style="font-size: x-small;">http://www.uushare.com/user/clippit/file/870647</span></a></p>
+
+<p>安装方法（自动安装包）：
+<strong><span style="color: navy;"><span style="font-size: medium;">下载回来得到一个可执行程序，实际上是一个WinRAR自解压程序。请务必正确指定您的孢子安装目录，只有正确选择游戏安装目录，本简体中文包才能正确安装并使用。接下来的操作全自动完成，结束后会在桌面生成一个快捷方式，用其进入游戏即可。</span></span></strong></p>
+
+<p><span style="font-size: medium;"></span><span style="font-size: medium;"><span style="color: red;">■如果你想手动安装，也可以：</span></span></p>
+
+<p><span style="LINE-HEIGHT: 150%"><span style="font-size: medium;"><span style="color: red;"><!--more-->
+</span></span>把下载回来的文件用WinRAR打开，解压缩到“[Spore游戏目录]\Data\Locale\ko-kr”内。然后使用我提供的引导程序进入游戏即可。如果你不想用引导程序，请创建一个指向SporeApp.exe的快捷方式，选择属性，然后在“目标”旁边的文本框最后加上“ -locale:ko-kr”（双引号无需输入，最前面有一个空格）。最后确定退出，以后就用这个快捷方式进入游戏。</span></p>
+
+<p><span style="color: red;"><span style="font-size: medium;"><span style="color: red;">■引导程序说明：</span></span>
+</span>由于WinRAR自解压模块不支持给不在压缩包内的文件创建快捷方式，因此我使用AutoIt编写了一个进入简体中文孢子的引导程序，名为SporeBootstrap.exe。使用自动安装程序安装后得到的快捷方式实际上就是它的快捷方式。以前的版本中，本文件容易被报为木马，事实上它是十分安全的，在2.5版中，我改进了编译方式，不使用UPX压缩了，所以被误报的可能性大大降低。</p>
+
+<p><span style="font-size: medium;"><span style="color: red;">■为什么要使用“ko-kr”文件夹？
+</span></span>虽然这是简体中文语言包，但是没有使用zh-cn而使用了ko-kr。这主要是因为游戏开发人员没有设定在用户使用zh-cn时采取双字节文字的输入方式，导致输入的中文全部显示为问号。在先前的版本中，简体中文语言包安装在可以正常输入中文的zh-tw文件夹内，但这样就可能会覆盖掉原先存在的官方繁体中文包。后来发现安装进ko-kr（对应韩语）文件夹内依然可以正常输入中文，因此本版本开始使用ko-kr文件夹。</p>
+
+<p></p>
