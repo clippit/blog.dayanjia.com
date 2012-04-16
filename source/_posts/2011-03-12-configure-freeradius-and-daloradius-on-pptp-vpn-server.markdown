@@ -184,7 +184,7 @@ daloRADIUS似乎写的不怎么样，最新稳定版已经是三年之前的了�
 
 ### 配置pppd
 
-[2] 编辑`/etc/ppp/options.pptpd`，里面已经有许多配置选项了，我们要保证有下面的几行，如果没有就添加上去，为了保障用户登录的安全我们限制只使用MS-CHAPv2：
+[20] 编辑`/etc/ppp/options.pptpd`，里面已经有许多配置选项了，我们要保证有下面的几行，如果没有就添加上去，为了保障用户登录的安全我们限制只使用MS-CHAPv2：
 
 {% codeblock %}
 refuse-pap
