@@ -33,7 +33,7 @@ comments: true
 
 为了破解这种限制，自然要请来强大的curl。这里我们使用的是PHP自带的curl库。在PHP中使用curl，基本上分为三步，首先`curl_init`初始化一个连接，然后用`curl_setopt`指定连接的各种操作和属性，最后用`curl_exec`执行。让我们来看具体代码：
 
-{% codeblock lang:php %}
+{% codeblock lang:phpinline %}
 function fetch_bbs_image($url) {
     $curl = curl_init($url); //初始化
     curl_setopt($curl, CURLOPT_HEADER, FALSE);
@@ -61,7 +61,7 @@ function fetch_bbs_image($url) {
 
 如果每次访问图片我们都需要在服务器上使用curl远程下载一个下来，是比较消耗资源的，我们可以做一个简单的本地缓存，第一次调用时进行下载的操作，今后就可以直接从本地缓存调取图片了。这时候我们需要保证下载回来的图片的文件名都是唯一的。这个好办，通过分析小百合BBS的文件路径，我们可以发现文件路径都是类似`http://bbs.nju.edu.cn/file/xxx/xxxx.jpg`的。所以我们只要把`xxx/xxxx.jpg`保存作为文件名即可，当然需要把其中的斜杠替换成其他字符。
 
-{% codeblock lang:php %}
+{% codeblock lang:phpinline %}
 define(CACHE_DIR, './lily_images/');
  
 function get_filename($url) {
@@ -82,7 +82,7 @@ if (file_exists(get_filename($url))) { // cache hit!
 
 实际应用时，我们发现有时候小百合BBS中的图片都是几百万像素的照片原图，在校园网内访问这些图片自然是毫无压力的，而且Web版BBS中有JavaScript来自动将过大的图片强制缩小显示，以免撑破版面。但是到了外站，如此大的图片就显得有些夸张了，利用PHP中的GD图形库，我们可以方便地进行图片的二次处理，首要的需求自然是将过大的图片缩小。GD库并没有直接按比例缩小图片的功能（如果有也太高级了），好在网上早已有许多现成的代码片段，我们便无需再次发明轮子了。参考了[Maxim Chernyak](http://mediumexposure.com/smart-image-resizing-while-preserving-transparency-php-and-gd-library/ "Smart Image Resizing while Preserving Transparency With PHP and GD Library")的代码片段，我们可以很轻松地实现这一功能。需要说明的是，原始的代码片段中对于小图片也会进行放大处理，而且它对GIF动画的处理会让它变成静止图片，因此需要对其进行小小的修改来满足我们的需要。
 
-{% codeblock 修改后的主脚本和图片缩小函数 lang:php %}
+{% codeblock 修改后的主脚本和图片缩小函数 lang:phpinline %}
 switch (strtolower(substr($url, - 3))) {
     case 'jpg' :
     case 'pge' :
