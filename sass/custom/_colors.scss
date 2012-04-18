@@ -12,13 +12,13 @@ $nav-bg-front: image-url('nav-pattern.png');
 $sidebar-bg: desaturate(#eceff5, 8);
 $sidebar-link-color: saturate(#526f9a, 10);
 $sidebar-link-color-hover: darken(#7ab662, 18);
-// $footer-bg: #ccc !default;
+$footer-bg: desaturate(#BAF2C3, 30);
 // $footer-bg-front: image-url('noise.png');
 // $footer-bg-back: linear-gradient(lighten($footer-bg, 8), $footer-bg, darken($footer-bg, 11));
 
 
 /* To use the light Solarized highlighting theme uncomment the following line */
-//$solarized: light;
+$solarized: light;
 
 /* If you want to tweak the Solarized colors you can do that here */
 //$base03:          #002b36; //darkest blue
