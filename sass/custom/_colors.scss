@@ -2,6 +2,8 @@
 // To give it a try, uncomment some of the lines below rebuild your blog, and see how it works.
 // If you need a handy color picker try http://hslpicker.com
 
+$experimental-support-for-svg: true;
+
 $body-shadow: #4f4f4f;
 $header-bg-back: darken(#725E99, 28);
 $header-bg-front: image-url('header-pattern.png');

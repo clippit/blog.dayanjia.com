@@ -1,5 +1,6 @@
 body > header {
-  @include background($header-bg-front, $header-bg-back);
+  background-color: $header-bg-back;
+  @include background-image($header-bg-front);
   margin-top: 30px;
   @include border-top-radius(10px);
   h1 {
