@@ -97,3 +97,6 @@ google_analytics_tracking_id: UA-308505-4
 
 # Facebook Like
 facebook_like: false
+
+# Baidu Share
+baidu_share: true
