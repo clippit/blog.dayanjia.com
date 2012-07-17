@@ -25,4 +25,45 @@ OOM Killer是Linux的一项保护机制，旨在内存不够用的时候杀掉�
 
 ## 目标锁定
 
-因为不知道问题是如何触发的，每做一项操作就要等待一段时间，检查是否有内存泄漏的问题发生。
+因为不知道问题是如何触发的，每做一项操作就要等待一段时间，检查是否有内存泄漏的问题发生。在排除了MySQL和PHP的问题后，终于把目光锁定在了Apache本身上。注意到上次[迁移Octopress](http://blog.dayanjia.com/2012/04/migration-to-octopress-from-wordpress/)时留下的用作跳转的Rewrite规则，内容是这样的：
+
+{% codeblock .htaccess lang:apache %}
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^www.dayanjia.com$ [NC]
+RewriteRule ^(.*)$ http://dayanjia.com/$1 [R=301,N]
+
+RewriteBase /
+RewriteRule "^(|index.php)$" http://blog.dayanjia.com/ [R=301,L,NC]
+RewriteRule "^20(.*)\.html$" http://blog.dayanjia.com/20$1/ [R=301,L,NC]
+RewriteRule "^page/(.*)$" http://blog.dayanjia.com/page/$1/ [R=301,L,NC]
+RewriteRule ^category/technical-articles$ "http://blog.dayanjia.com/category/雕虫小技/" [R=301,L,NE,NC]
+RewriteRule ^category/released-works$ "http://blog.dayanjia.com/category/自娱自乐/" [R=301,L,NE,NC]
+RewriteRule ^category/comments$ "http://blog.dayanjia.com/category/一家之言/" [R=301,L,NE,NC]
+RewriteRule ^category/(miscellaneous|school-life)$ "http://blog.dayanjia.com/category/侃侃而谈/" [R=301,L,NE,NC]
+RewriteRule ^sitemap.xml$ "http://blog.dayanjia.com/sitemap.xml" [R=301,L,NE,NC]
+{% endcodeblock %}
+
+一开始认为是规则中的非拉丁字符造成了什么奇怪的问题，事实上网上也的确有过[类似的报告](http://lists.debian.org/debian-apache/2012/03/msg00036.html)。阅读了邮件列表中的相关内容后也没有太大的收获，做出了一些小的修改，甚至把那几行带有中文的指令删除后，依然会零星发生内存问题。
+
+这不得不让我让我重新审视这段配置，并仔细研究起[mod_rewrite的文档](http://httpd.apache.org/docs/2.2/mod/mod_rewrite.html)来。突然第四行中的标志`N`引起了注意，[手册](http://httpd.apache.org/docs/2.2/rewrite/flags.html#flag_n)中是这么解释该标志的：
+
+{% blockquote %}
+The [N] flag causes the ruleset to start over again from the top, using the result of the ruleset so far as a starting point. Use with extreme caution, as it may result in loop.
+{% endblockquote %}
+
+{% pullquote %}
+仔细读了三遍后，我大脑如五雷轰顶天打雷劈一般恍然大悟——这句指令很可能造成了死循环！这条指令原本的目的是将带有www的访问重定向到不带www的URL中去。打开SSH开启top监控，然后在浏览器中输入`http://www.dayanjia.com`，果然httpd瞬间用尽了所有内存！将N标志去掉后，一切恢复正常了！{" 找到了！睡梦中的编程办法，就是这个编写程序的切入点！没错！ "} 想到这一点，我当时恨不得[立马拿来纸笔一口气写下20页代码然后昏睡三天](http://news.qq.com/a/20120705/000377.htm)。
+{% endpullquote %}
+
+## 循环陷阱
+
+我原本以为在那条指令中执行了跳转，再从头执行规则的时候，`HTTP_HOST`就已经不是原来的值了，所以不会造成死循环。但是事实并非如此，将Rewrite日志开启后，可以清楚地看到这条指令不断地执行而无法跳出，RewriteLogLevel 2配置下瞬间就生成了300多MB的日志信息，也难怪内存会用尽吧。
+
+找来[Apache的源码](http://archive.apache.org/dist/httpd/)大概浏览了一下，发现文档中“ruleset”的使用还是很精准的。事实是，循环的范围仅仅是一条或几条相关的指令本身，在循环执行时不会再去判断RewriteCond是否满足了。源码中使用的不是类似`while`循环的结构，而是直接`goto`跳转的。
+
+## 内存你甘心嘛！
+
+可以看出，Apache在这里将风险的识别交给了配置者，程序本身并没有做任何检查。这似乎也不是一个好方法，最起码可以说表现的不太完善。既然可以做到各种内存使用限制，那么检查一下潜在的死循环也不是什么难事吧。
+
+{% img http://img.dayanjia.com/di/D17E/pointers.png %}
