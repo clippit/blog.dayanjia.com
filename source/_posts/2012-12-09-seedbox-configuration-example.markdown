@@ -44,7 +44,7 @@ GATEWAY6='2001:41d0:xxxx:xxff:ff:ff:ff:ff'
 
 Linux下的BitTorrent软件也有[很多种选择](http://en.wikipedia.org/wiki/Category:Linux_BitTorrent_clients)，用作Seedbox的主要是[rTorrent](http://libtorrent.rakshasa.no/)和[Deluge](http://deluge-torrent.org/)。这两款软件的共同点是都可以以Daemon模式运行在系统后台，图形界面并不是强制的（rTorrent甚至只有字符界面），软件操作可以通过Web UI来进行。rTorrent并没有自带Web UI，但是有功能非常强大的第三方软件[ruTorrent](https://code.google.com/p/rutorrent/)提供支持。Deluge是自带Web UI的，而且它还有一个优点是支持IPv6网络。rTorrent的IPv6支持[迟迟没有被作者提上开发日程](https://github.com/rakshasa/rtorrent/issues/59)，不得不让人感到遗憾。
 
-因为我们决定在Seedbox上安装Deluge。安装过程很简单，直接通过官方源`pacman -S deluge`即可。安装完毕后可以将`deluged`和`deluge-web`加入系统DAEMONS中，以实现开机启动。
+<del>因为</del>因此我们决定在Seedbox上安装Deluge。安装过程很简单，直接通过官方源`pacman -S deluge`即可。安装完毕后可以将`deluged`和`deluge-web`加入系统DAEMONS中，以实现开机启动。
 
 官方源中的Deluge安装脚本会创建一个新用户及组`deluge`来运行相关的守护程序，并且它的Home目录在`/srv/deluge/`。这有点不符合我们的系统（OVH的系统镜像给`/home`单独划分了一个分区，分配了很大的空间），可以将它改成`/home/deluge/`，今后下载的目录便可以设置为`/home/deluge/downloads/`。
 
