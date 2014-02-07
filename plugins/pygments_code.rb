@@ -11,26 +11,25 @@ module HighlightCode
     lang = 'objc' if lang == 'm'
     lang = 'perl' if lang == 'pl'
     lang = 'yaml' if lang == 'yml'
-    opts = {}
-    if lang == 'phpinline'
-      lang = 'php'
-      opts = {:startinline => true}
-    end
-    str = pygments(str, lang, opts).match(/<pre>(.+)<\/pre>/m)[1].to_s.gsub(/ *$/, '') #strip out divs <div class="highlight">
+    str = pygments(str, lang).match(/<pre>(.+)<\/pre>/m)[1].to_s.gsub(/ *$/, '') #strip out divs <div class="highlight">
     tableize_code(str, lang)
   end
 
-  def pygments(code, lang, opts)
+  def pygments(code, lang)
     if defined?(PYGMENTS_CACHE_DIR)
       path = File.join(PYGMENTS_CACHE_DIR, "#{lang}-#{Digest::MD5.hexdigest(code)}.html")
       if File.exist?(path)
         highlighted_code = File.read(path)
       else
-        highlighted_code = Pygments.highlight(code, :lexer => lang, :formatter => 'html', :options => opts.merge({:encoding => 'utf-8'}))
+        begin
+          highlighted_code = Pygments.highlight(code, :lexer => lang, :formatter => 'html', :options => {:encoding => 'utf-8', :startinline => true})
+        rescue MentosError
+          raise "Pygments can't parse unknown language: #{lang}."
+        end
         File.open(path, 'w') {|f| f.print(highlighted_code) }
       end
     else
-      highlighted_code = Pygments.highlight(code, :lexer => lang, :formatter => 'html', :options => opts.merge({:encoding => 'utf-8'}))
+      highlighted_code = Pygments.highlight(code, :lexer => lang, :formatter => 'html', :options => {:encoding => 'utf-8', :startinline => true})
     end
     highlighted_code
   end
