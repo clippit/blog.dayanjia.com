@@ -106,7 +106,7 @@ module Jekyll
     # Loops through the list of category pages and processes each one.
     def write_category_indexes
       if self.layouts.key? 'category_index'
-        dir = self.config['category_dir'] || 'categories'
+        dir = "/" << self.config['category_dir'] || 'categories'
         self.categories.keys.each do |category|
           self.write_category_index(File.join(dir, category.to_url), category)
         end

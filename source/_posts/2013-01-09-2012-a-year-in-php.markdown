@@ -91,4 +91,4 @@ XUnit 风格的测试框架似乎已被社区淡忘，不过 Spec 框架和行�
 
 * Ben Longden
 * Alistair Stead
-* 翻译：大眼夹（http://dayanjia.com）
+* 翻译：大眼夹 (http://dayanjia.com)

@@ -3,7 +3,7 @@ layout: post
 title: "使用Joomla! Platform开发Web应用程序"
 date: 2012-08-09 22:06
 comments: true
-categories: 
+categories:
  - 自娱自乐
 ---
 
@@ -73,7 +73,7 @@ interface JView
 
 J!Platform使用了PHP的autoload特性，只要按照一定的方式命名类并将其存入恰当的目录中，就不需要手动`require`任何东西了。想要将自己应用中的类纳入自动加载的范围内，你需要统一类的前缀，并将基本目录注册到J!Platform中：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 JLoader::registerPrefix('Foo', '/custom/path');
 {% endcodeblock %}
 
@@ -105,7 +105,7 @@ define('JPATH_PLATFORM', dirname(dirname(__FILE__)) . '/joomla/libraries');
 
 接着加载整个框架：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 require_once JPATH_PLATFORM.'/import.php';
 {% endcodeblock %}
 
@@ -113,13 +113,13 @@ require_once JPATH_PLATFORM.'/import.php';
 
 然后我们注册自己的前缀类以启用自动加载类的功能：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 JLoader::registerPrefix('LH', JPATH_BASE);
 {% endcodeblock %}
 
 接下来便可以实例化Web应用了，这是一个继承了[`JApplicationWeb`](https://github.com/joomla/joomla-platform/blob/master/libraries/joomla/application/web.php)的实例，是整个Web应用的基础对象。随后我们将实例化的`$app`保存到`JFactory`中以便全局访问，然后将其初始化并开始执行过程。至此Web应用的引导过程结束。
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 // Instantiate the application.
 $app = JApplicationWeb::getInstance('LHApplicationWeb');
 

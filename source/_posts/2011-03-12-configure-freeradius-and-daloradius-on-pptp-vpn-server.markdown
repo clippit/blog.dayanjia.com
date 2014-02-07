@@ -142,22 +142,22 @@ mysql -uroot -p radius < /usr/share/daloRadius/contrib/db/fr2-mysql-daloradius-a
 
 [15] 编辑`/usr/share/daloRadius/library/daloradius.conf.php`，这是daloRADIUS的配置文件。首先是MySQL登录信息：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 $configValues['CONFIG_DB_HOST'] = 'localhost';
 $configValues['CONFIG_DB_USER'] = 'radius';
-$configValues['CONFIG_DB_PASS'] = '***';  // 设为自己的密码 
+$configValues['CONFIG_DB_PASS'] = '***';  // 设为自己的密码
 $configValues['CONFIG_DB_NAME'] = 'radius';
 {% endcodeblock %}
 
 下面有一个daloRADIUS的bug，默认配置中有一个表名和我们导入的不一样，把它改过来：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 $configValues['CONFIG_DB_TBL_RADUSERGROUP'] = 'radusergroup';
 {% endcodeblock %}
 
 然后修改daloRADIUS的路径：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 $configValues['CONFIG_PATH_DALO_VARIABLE_DATA'] = '/usr/share/daloRadius/var';
 {% endcodeblock %}
 

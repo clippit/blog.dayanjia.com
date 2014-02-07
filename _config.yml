@@ -33,6 +33,7 @@ destination: public
 plugins: plugins
 code_dir: downloads/code
 category_dir: category
+category_title_prefix: "分类："
 markdown: rdiscount
 rdiscount:
   extensions:

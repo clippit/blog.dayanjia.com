@@ -33,7 +33,7 @@ comments: true
 
 为了破解这种限制，自然要请来强大的curl。这里我们使用的是PHP自带的curl库。在PHP中使用curl，基本上分为三步，首先`curl_init`初始化一个连接，然后用`curl_setopt`指定连接的各种操作和属性，最后用`curl_exec`执行。让我们来看具体代码：
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 function fetch_bbs_image($url) {
     $curl = curl_init($url); //初始化
     curl_setopt($curl, CURLOPT_HEADER, FALSE);
@@ -61,13 +61,13 @@ function fetch_bbs_image($url) {
 
 如果每次访问图片我们都需要在服务器上使用curl远程下载一个下来，是比较消耗资源的，我们可以做一个简单的本地缓存，第一次调用时进行下载的操作，今后就可以直接从本地缓存调取图片了。这时候我们需要保证下载回来的图片的文件名都是唯一的。这个好办，通过分析小百合BBS的文件路径，我们可以发现文件路径都是类似`http://bbs.nju.edu.cn/file/xxx/xxxx.jpg`的。所以我们只要把`xxx/xxxx.jpg`保存作为文件名即可，当然需要把其中的斜杠替换成其他字符。
 
-{% codeblock lang:phpinline %}
+{% codeblock lang:php %}
 define(CACHE_DIR, './lily_images/');
- 
+
 function get_filename($url) {
     return CACHE_DIR . str_replace('/', '-', substr($url, 27));
 }
- 
+
 if (file_exists(get_filename($url))) { // cache hit!
     echo file_get_contents(get_filename($url));
     exit();
@@ -82,7 +82,7 @@ if (file_exists(get_filename($url))) { // cache hit!
 
 实际应用时，我们发现有时候小百合BBS中的图片都是几百万像素的照片原图，在校园网内访问这些图片自然是毫无压力的，而且Web版BBS中有JavaScript来自动将过大的图片强制缩小显示，以免撑破版面。但是到了外站，如此大的图片就显得有些夸张了，利用PHP中的GD图形库，我们可以方便地进行图片的二次处理，首要的需求自然是将过大的图片缩小。GD库并没有直接按比例缩小图片的功能（如果有也太高级了），好在网上早已有许多现成的代码片段，我们便无需再次发明轮子了。参考了[Maxim Chernyak](http://mediumexposure.com/smart-image-resizing-while-preserving-transparency-php-and-gd-library/ "Smart Image Resizing while Preserving Transparency With PHP and GD Library")的代码片段，我们可以很轻松地实现这一功能。需要说明的是，原始的代码片段中对于小图片也会进行放大处理，而且它对GIF动画的处理会让它变成静止图片，因此需要对其进行小小的修改来满足我们的需要。
 
-{% codeblock 修改后的主脚本和图片缩小函数 lang:phpinline %}
+{% codeblock 修改后的主脚本和图片缩小函数 lang:php %}
 switch (strtolower(substr($url, - 3))) {
     case 'jpg' :
     case 'pge' :
@@ -98,7 +98,7 @@ switch (strtolower(substr($url, - 3))) {
         $type = '';
 }
 header("Content-Type: $type");
- 
+
 if (file_exists(get_filename($url))) { // cache hit!
     echo file_get_contents(get_filename($url));
     exit();
@@ -111,7 +111,7 @@ if (file_exists(get_filename($url))) { // cache hit!
     }
     echo file_get_contents($filename);
 }
- 
+
 /**
  * Smart Image Resizing while Preserving Transparency With PHP and GD Library
  * tinily modified by @author clippit
@@ -123,19 +123,19 @@ function smart_resize_image($file, $width = 0, $height = 0, $proportional = fals
     if ($height <= 0 && $width <= 0) {
         return false;
     }
- 
+
     $info = getimagesize($file);
     $image = '';
- 
+
     if ($info [0] <= $width || $info [1] <= $height) {
         // if the original image is too small to the target width and height, then do not zoom in
         return false;
     }
- 
+
     $final_width = 0;
     $final_height = 0;
     list ( $width_old, $height_old ) = $info;
- 
+
     if ($proportional) {
         if ($width == 0)
             $factor = $height / $height_old;
@@ -143,15 +143,15 @@ function smart_resize_image($file, $width = 0, $height = 0, $proportional = fals
             $factor = $width / $width_old;
         else
             $factor = min($width / $width_old, $height / $height_old);
- 
+
         $final_width = round($width_old * $factor);
         $final_height = round($height_old * $factor);
- 
+
     } else {
         $final_width = ($width <= 0) ? $width_old : $width;
         $final_height = ($height <= 0) ? $height_old : $height;
     }
- 
+
     switch ($info [2]) {
         case IMAGETYPE_GIF :
             $image = imagecreatefromgif($file);
@@ -165,53 +165,53 @@ function smart_resize_image($file, $width = 0, $height = 0, $proportional = fals
         default :
             return false;
     }
- 
+
     $image_resized = imagecreatetruecolor($final_width, $final_height);
- 
+
     if (($info [2] == IMAGETYPE_GIF) || ($info [2] == IMAGETYPE_PNG)) {
         $trnprt_indx = imagecolortransparent($image);
- 
+
         // If we have a specific transparent color
         if ($trnprt_indx >= 0) {
- 
+
             // Get the original image's transparent color's RGB values
             $trnprt_color = imagecolorsforindex($image, $trnprt_indx);
- 
+
             // Allocate the same color in the new image resource
             $trnprt_indx = imagecolorallocate($image_resized, $trnprt_color ['red'], $trnprt_color ['green'], $trnprt_color ['blue']);
- 
+
             // Completely fill the background of the new image with allocated color.
             imagefill($image_resized, 0, 0, $trnprt_indx);
- 
+
             // Set the background color for new image to transparent
             imagecolortransparent($image_resized, $trnprt_indx);
- 
+
         } // Always make a transparent background color for PNGs that don't have one allocated already
 elseif ($info [2] == IMAGETYPE_PNG) {
- 
+
             // Turn off transparency blending (temporarily)
             imagealphablending($image_resized, false);
- 
+
             // Create a new transparent color for image
             $color = imagecolorallocatealpha($image_resized, 0, 0, 0, 127);
- 
+
             // Completely fill the background of the new image with allocated color.
             imagefill($image_resized, 0, 0, $color);
- 
+
             // Restore transparency blending
             imagesavealpha($image_resized, true);
         }
     }
- 
+
     imagecopyresampled($image_resized, $image, 0, 0, 0, 0, $final_width, $final_height, $width_old, $height_old);
- 
+
     if ($delete_original) {
         if ($use_linux_commands)
             exec('rm ' . $file);
         else
             @unlink($file);
     }
- 
+
     switch (strtolower($output)) {
         case 'browser' :
             $mime = image_type_to_mime_type($info [2]);
@@ -227,7 +227,7 @@ elseif ($info [2] == IMAGETYPE_PNG) {
         default :
             break;
     }
- 
+
     switch ($info [2]) {
         case IMAGETYPE_GIF :
             imagegif($image_resized, $output);
@@ -241,7 +241,7 @@ elseif ($info [2] == IMAGETYPE_PNG) {
         default :
             return false;
     }
- 
+
     return true;
 }
 {% endcodeblock %}
@@ -257,11 +257,11 @@ elseif ($info [2] == IMAGETYPE_PNG) {
 
 {% codeblock lang:python %}
 import base64, re, urllib
- 
+
 def encode_url(match):
     url = urllib.pathname2url( base64.b64encode(match.group(1)) )
     return ''.join( ('<img alt="" src="', GET_IMAGE, url, '"') )
- 
+
 def image_proxy(text):
     return re.sub(r'<img alt="" src="([^"]+)"', encode_url, text)
 {% endcodeblock %}
