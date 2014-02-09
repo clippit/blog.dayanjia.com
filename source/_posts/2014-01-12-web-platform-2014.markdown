@@ -1,0 +1,115 @@
+---
+layout: post
+title: Web 平台：展望 2014 年的五项技术
+date: 2014-01-12 08:00
+comments: true
+categories:
+ - 侃侃而谈
+---
+
+原文：[Web platform: five technologies to look forward to in 2014](http://www.2ality.com/2014/01/web-platform-2014.html)
+
+本文介绍了在2014年会让Web开发变得更加让人兴奋的五项技术。
+
+* asm.js: 在 Web 上达到接近原生机器的性能
+* ParallelJS: 并行的 JavaScript 代码
+* ECMAScript 6 (ES6): 语言进化，凝聚社区的力量
+* Web Components: 一种 Widgets 的标准结构
+* CSS Grid Layout: 像原生 GUI 一样布局
+
+<!--more-->
+
+## asm.js: 在 Web 上达到接近原生机器的性能
+
+### 这是啥
+
+它是一个 JavaScript 子集，在当前的引擎中运行得很快（截至目前大约是C++代码的70%速度）。
+
+### 有啥兴奋的
+
+* 在 Web 浏览器中获得接近原生的速度
+* 和 JavaScript 紧密结合
+* 已和当前的所有 JavaScript 引擎兼容。针对单一引擎优化的 asm.js 代码需要更多的工作，但是这可以慢慢来。
+
+### 更多信息
+
+[《asm.js: 跨越 JavaScript 和原生代码的鸿沟》](http://www.2ality.com/2013/02/asm-js.html)
+
+
+## ParallelJS: 并行的 JavaScript 代码
+
+### 这是啥
+
+这个项目是由一个叫做 River Trail 的 JS 引擎衍生而来，它可以使 JavaScript 中的数组函数并行化，例如 `mapPar()`、`filterPar()` 和 `reducePar()`。相信你一定可以看出，这些方法正是 `map()`、`filter()` 和 `reduce()` 的并行化版本。
+
+### 有啥兴奋的
+
+你可以无痛地获得并行化带来的好处。此外，该项目的远景也让人振奋——ParallelJS 最终可以生成 GPU 代码。
+
+### 更多信息
+
+[《ParallelJS: JavaScript 的数据并行化》](http://www.2ality.com/2013/12/paralleljs.html)
+
+
+## ECMAScript 6 (ES6): 语言进化，凝聚社区的力量
+
+### 这是啥
+
+JavaScript 的下一个版本。大约在 2014 年底，ECMAScript 6 标准将会正式发布，届时大多数的特性将会被各种执行引擎支持。然而，现在已经有部分特性[可供使用](http://addyosmani.com/blog/tracking-es6-support/)了。
+
+### 有啥兴奋的
+
+ECMAScript 6 会带来众多新特性，但是我觉得以下两个会是最具影响力的，即使当前的继承 API 和模块系统已经可以很好的工作。这影响力并不是因为它们实现了 JavaScript 以前不具备的功能，而是因为它们凝聚了集体力量，让社区更加团结。
+
+* 类：当前几乎每个框架都有自己的继承 API，这使得代码移植显得些许困难。随着 ECMAScript 6 类的出现，我们有希望统一使用同样的机制。
+* 模块：简单来看，当前的 JavaScript 模块系统分为 Node.js 和 AMD 两种实现。ES6 的出现将有机会改变这一现状。
+
+### 更多信息
+
+* 我的演讲在线幻灯片[《ECMAScript 6: 下一代 JavaScript 会是什么样？》](https://speakerdeck.com/rauschma/ecmascript-6-whats-next-for-javascript)。同时还有该演讲的一个较旧版本的[视频](http://www.youtube.com/watch?v=_ZG_CrYyh_Q)。
+* 如果你想钻研一些细节，我写了很多关于 ECMAScript 6 的[博客文章](http://www.2ality.com/search/label/esnext)。
+* 如果你很重口味，可以直接去看 [PDF](http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts) 或者 [HTML](https://people.mozilla.org/~jorendorff/es6-draft.html) 版本的 ECMAScript 6 技术规格文档。
+* [《JavaScript Promises: 去而复返》](http://www.html5rocks.com/en/tutorials/es6/promises/)（作者：Jake Archibald）解释了 promises 以及怎样和生成器(generators)一起使用它。
+* [当前 JavaScript 引擎中的 ECMAScript 6 支持情况](http://addyosmani.com/blog/tracking-es6-support/)，作者：Addy Osmani
+
+
+## Web Components: 一种 Widgets 的标准结构
+
+### 这是啥
+
+在 Web 中实现自己的组件(Widgets)是一件极其蛋疼的事（封装和打包 HTML、CSS、JavaScript，确保性能、当模型改变时更新视图，等等），因此有许多框架来帮助我们完成这项工作。一方面，Web Components 得益于各种框架中的不同实现，吸收了各家长处；另一方面，它可以利用各种新的 Web 平台特性，例如使用 [Shadow DOM](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/) 来封装组件的标记代码，或是通过 [`Object.observe()`](http://updates.html5rocks.com/2012/11/Respond-to-change-with-Object-observe) 实现高效的事件绑定。
+
+### 有啥兴奋的
+
+Web Components 将会把 Web 组件带向一个通用的生态系统。当前，你可能会偶然发现一个非常棒的组件，但是它无法在你选用的框架下工作。在将来，这个问题有望得到解决，因为所有的组件都是 Web Components，而所有框架都支持 Web Components。届时，Web 框架就能够专注于更新的想法，而不用去重新发明基础轮子。
+
+Google 的 [Polymer](http://www.polymer-project.org/) 提供了一套 Web Components 在当前浏览器中的支持方案。这意味着这些 API 在成为 HTML5 的一部分之前，会得到真实项目经验的打磨。
+
+### 更多信息
+
+* [Web Components 资源](http://ebidel.github.io/webcomponents/)，作者：Eric Bidelman
+* [《Google 的 Polymer 和 Web UI 框架的未来》](http://www.2ality.com/2013/05/google-polymer.html)
+
+
+## CSS Grid Layout: 像原生 GUI 一样布局
+
+### 这是啥
+
+引用自标准：
+
+> 这个 CSS 模块定义了一个二维的、基于网格的布局系统，它专为用户界面设计而优化。在这种网格布局模型中，一个网格容器的子元素可以被定位在任意数量的槽中，这些槽可以自适应的，也可以是预先定义好固定大小的布局网格。
+
+### 有啥兴奋的
+
+诸如 Android、iOS(Cocoa) 和 Java SWT 这些移动和桌面应用 UI 框架一直在 GUI 布局技术上遥遥领先于 Web。CSS 网格布局将会填补这一空缺。至于[浏览器支持](http://caniuse.com/css-grid)怎么样？Internet Explorer 已经支持了，而 [Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=616605) 和 [Chrome](https://code.google.com/p/chromium/issues/detail?id=79180) 的实现也正在开发中。在 2014 年的后期，这两个浏览器有望完成对其的支持。我们可以通过那份技术文档的编辑人员名单看到积极的迹象。
+
+### 弹性方框模型（Flexbox）和 CSS 网格布局
+
+[Flexbox](http://css-tricks.com/snippets/css/a-guide-to-flexbox/) 是另一种 CSS 布局机制，目前已经获得了大量浏览器的[支持](http://caniuse.com/flexbox)。这对流式排列 HTML 行元素非常有帮助。然而网格布局可以让你做到更多，因为你可以垂直地或者水平地嵌套弹性框。 然而在弹性方框模型中，你需要指定一个主维度（水平或垂直），同时在两个方向做到动态关联是不可能的。也就是说，使用 CSS 网格布局可以更容易地实现真正的网格（就像在桌面 GUI 中使用的那样）。
+
+### 更多信息
+
+* [CSS 网格布局模块 级别1](http://dev.w3.org/csswg/css-grid/)，作者：[Tab Atkins Jr.](http://www.xanthir.com/contact/) (Google), [fantasai](http://fantasai.inkedblade.net/contact) (Mozilla), Rossen Atanassov (Microsoft)
+* [《 理解 CSS3 弹性方框和网络布局的不同》](http://www.outsidethebracket.com/understanding-the-difference-between-css3-flexbox-grid-layout/)，作者：Kyle Keeling ([@kyle_keeling](https://twitter.com/kyle_keeling))
+* [在哪些浏览器中可以使用 CSS 网格布局？](http://caniuse.com/css-grid)，作者：Alexis Deveria ([@Fyrd](https://twitter.com/Fyrd))
+
